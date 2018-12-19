@@ -1,0 +1,48 @@
+html,
+body {
+
+    /*height: 100%;*/
+    /*margin: auto;*/
+    /*padding: auto;*/
+    /*font: 14px/1.8 Georgia, Arial, Simsun;*/
+    /*background-image: url(../img/bgIn.png);*/
+    /*background-size: cover;*/
+    /*background-color: #e3e3e3;*/
+    /*font-family:  "黑体" ;*/
+    /*padding: 0 100px*/
+    overflow: hidden;!important;
+    height: 100%;!important;
+    margin: auto;!important;
+    /*padding-left: 100px;*/
+    font: 13px Georgia, Arial, Simsun;!important;
+    background-image: url(/img/bgIn.png);!important;
+    background-size: cover;!important;
+    /*background-color: #102336;!important;*/
+    overflow-y: visible;!important;
+    font-family:  "黑体" ;!important;
+
+}
+input[type="text"],textarea,select,input[type="file"]{
+    border: solid 1px #18818b;
+    color: #bcbcbc;
+    border-radius: 3px;
+    background-color: rgba(10, 95, 162, 0);
+    padding: 5px 5px 5px 5px;
+}
+select option{
+    background-color: #102133;
+    color: #bcbcbc;
+}
+input[type="button"],input[type="submit"],input[type="reset"]{
+    padding: 6px 9px 6px 9px;
+    border: none;
+    border-radius: 5px;
+    background-color: #3e4652;
+    color: #bcbcbc;
+    box-shadow: none;
+    /*height: auto;!important;*/
+}
+td{
+    padding: 20px 0 10px 0;
+    overflow-y: visible;
+}

@@ -1,0 +1,29 @@
+
+	.TotCatalogHead {
+		font-family: "宋体"; 
+		font-size:25px; 
+		color: black; 
+		font-weight: bold;
+	}
+	@media print{ 
+		.pageBreak {page-break-after:always;}
+		.Noprn {display:none;} 
+	}
+	#lis {
+		padding:0;
+		margin:0;
+		width: 100%;
+	}
+	#lis .liDetail {
+		list-style:none;
+		margin-left:20px;
+	}
+	#lis .liDetail2 {
+		list-style:none;
+		margin:10px 0px 10px 20px;
+		white-space: normal;
+	}
+	#lis .liDetail3 {
+		list-style:none;
+		margin-left:18px;
+	}

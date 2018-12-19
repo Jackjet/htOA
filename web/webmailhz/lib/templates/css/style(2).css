@@ -1,0 +1,6 @@
+#chkupdate_container {
+	BORDER-RIGHT: #ff0000 1px solid; PADDING-RIGHT: 5px; BORDER-TOP: #ff0000 1px solid; DISPLAY: none; PADDING-LEFT: 5px; FONT-SIZE: 12px; PADDING-BOTTOM: 2px; MARGIN-LEFT: 12px; BORDER-LEFT: #ff0000 1px solid; WIDTH: 260px; PADDING-TOP: 2px; BORDER-BOTTOM: #ff0000 1px solid; WHITE-SPACE: nowrap; BACKGROUND-COLOR: #f9fbfc
+}
+#chkupdate_hint {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; LINE-HEIGHT: 1.4em; PADDING-TOP: 0px
+}

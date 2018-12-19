@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE tiles-definitions PUBLIC 
+"-//Apache Software Foundation//DTD Tiles Configuration 1.1//EN" 
+"http://jakarta.apache.org/struts/dtds/tiles-config_1_1.dtd">
+
+
+
+<tiles-definitions>
+	<definition name="webmail.baseTemplate" path="/webmailhz/mailTemplate.jsp">
+		<put name="header_part" value="/templates/top.jsp" />
+		<put name="systemMenu" value="/webmailhz/mailMenu.jsp" />
+		<put name="subMenu" value="/webmailhz/mailSubMenu.jsp" />
+		<put name="leftMenu" value="/templates/bigLeft.jsp" />
+		<put name="contentMain" value="/templates/contentMain.jsp" />
+		<put name="bottom_part" value="/templates/bottom.jsp" />
+	</definition>
+	
+	<definition extends="webmail.baseTemplate" name="mail.list">
+		<put name="leftMenu" value="/webmailhz/left.jsp" />
+    	<put name="contentMain" value="/webmailhz/listMail.jsp" />    	
+  	</definition>	
+  	
+</tiles-definitions>

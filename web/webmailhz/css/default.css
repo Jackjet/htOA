@@ -1,0 +1,38 @@
+A       {color: #222222; font-weight: plain; text-decoration: none; }
+A:hover {color: #222222; font-weight: plain; text-decoration: underline; }
+
+.classicLook0   {color: #222222; background-color: #FFFFFF; }
+.classicLook1   {color: #222222; background-color: #F8F8F8; }
+.classicLook2   {color: #222222; background-color: #EEEEEE; }
+.classicLook3   {color: #222222; background-color: #E8E8E8; }
+.classicLook4   {color: #222222; background-color: #DDDDDD; }
+.classicLook5   {color: #222222; background-color: #E8E8E8; }
+.classicLook6   {color: #222222; background-color: #EEEEEE; }
+.classicLook7   {color: #222222; background-color: #F8F8F8; }
+
+.selected {color: #000000; background-color: #eeeeee; }
+
+
+table.classicLook    {border: 1px solid #ccc; border-collapse: collapse;}
+table.classicLook td {border: 1px solid #ccc; text-align: center;} 
+table.classicLook th {border: 1px solid #ccc; text-align: center;}
+
+table.filters    {border: 0px; border-collapse: collapse;}
+table.filters td {border: 0px; text-align: center;}
+table.filters th {border: 0px; text-align: center; font-weight: bold;}
+
+table.simpleLook    {border: 0px solid #CCCCCC; border-collapse: collapse;}
+table.simpleLook td {border-bottom: 1px solid #104A7B; text-align: center;} 
+table.simpleLook th {border-bottom: 1px solid #104A7B; text-align: center; background-color: #FFFFFF;}
+
+.simpleLook0   {color: #222222; background-color: #DAE1F9; }
+.simpleLook1   {color: #222222; background-color: #EEEEF9; }
+
+table.microsoftLook th{ background-color: #b3d7ff; border-width: 1; border-bottom-color: darkblue; border-style: solid; border-top-color: #F3EEFE; border-right-color: darkblue; border-left-color: white;	COLOR: #0054e3; FONT-WEIGHT: bold; FONT-SIZE: 8pt; FONT-FAMILY: Trebuchet MS,tahoma,arial,verdana,sans-serif;  line-height: 19px;}
+table.microsoftLook th a{ COLOR: darkblue; FONT-WEIGHT: bold; TEXT-DECORATION: underline;}
+table.microsoftLook th a:hover {  COLOR: #5c7ed8;}
+table.microsoftLook td{   text-align: center;}
+
+.microsoftLook0{ border-bottom: 1px solid #104A7B; padding: 2px; FONT-SIZE: 8pt; FONT-FAMILY: tahoma,arial,verdana,sans-serif; BACKGROUND-COLOR: #e8eff9; text-overflow: ellipsis; overflow: hidden;}
+.microsoftLook1{ border-bottom: 1px solid #104A7B; padding: 2px; FONT-SIZE: 8pt; FONT-FAMILY: tahoma,arial,verdana,sans-serif; BACKGROUND-COLOR: #ffffff; text-overflow: ellipsis; overflow: hidden;}
+A.microsoftLook0:hover, A..microsoftLook1:hover { COLOR: #5c7ed8;}

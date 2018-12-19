@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quartz xmlns="http://www.opensymphony.com/quartz/JobSchedulingData"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.opensymphony.com/quartz/JobSchedulingData http://www.opensymphony.com/quartz/xml/job_scheduling_data_1_5.xsd"
+	version="1.5">
+	
+	<!--<job>-->
+		<!--<job-detail>-->
+			<!--<name>ShortMessagingJob</name>-->
+			<!--<group>DEFAULT</group>-->
+			<!--<description>A job that renders short messaging service</description>-->
+			<!--<job-class>com.kwchina.sms.job.ShortMessagingJob</job-class>-->
+			<!--<volatility>false</volatility>-->
+			<!--<durability>false</durability>-->
+			<!--<recover>false</recover>-->
+		<!--</job-detail>-->
+
+		<!--<trigger>-->
+			<!--<cron>-->
+				<!--<name>shortMessagingTrigger</name>-->
+				<!--<group>DEFAULT</group>-->
+				<!--<job-name>ShortMessagingJob</job-name>-->
+				<!--<job-group>DEFAULT</job-group>-->
+				<!--&lt;!&ndash; Fire each quarter Every Day &ndash;&gt;-->
+				<!--<cron-expression>0 0/1 * * * ?</cron-expression>-->
+			<!--</cron>-->
+		<!--</trigger>-->
+	<!--</job>-->
+	
+	<job>
+		<job-detail>
+			<name>BalanceInquireJob</name>
+			<group>DEFAULT</group>
+			<description>A job that inquires balance of the SM Card</description>
+			<job-class>com.kwchina.sms.job.BalanceInquireJob</job-class>
+			<volatility>false</volatility>
+			<durability>false</durability>
+			<recover>false</recover>
+		</job-detail>
+
+		<trigger>
+			<cron>
+				<name>balanceInquireTrigger</name>
+				<group>DEFAULT</group>
+				<job-name>BalanceInquireJob</job-name>
+				<job-group>DEFAULT</job-group>
+				<!-- <cron-expression>0 0/2 * * * ?</cron-expression> -->
+				<cron-expression>0 30 7,19 ? * 1-7</cron-expression>
+			</cron>
+		</trigger>
+	</job>
+
+</quartz>

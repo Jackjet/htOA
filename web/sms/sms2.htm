@@ -1,0 +1,185 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>发送内部短信</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+<script src="../inc/js/mouse_mon.js"></script>
+
+<script language="JavaScript">
+function CheckForm()
+{
+   if(document.form1.TO_ID.value=="")
+   { alert("请添加收信人！");
+     return (false);
+   }
+ 		document.form1.CONTENT.value=EDIT_HTML.getHTML();
+   if(document.form1.CONTENT.value=="")
+   { alert("短信内容不能为空！");
+     return (false);
+   }
+
+   return (true);
+}
+
+function clear_user()
+{
+  document.form1.TO_NAME.value="";
+  document.form1.TO_ID.value="";
+}
+
+function clear_sms()
+{
+  document.form1.CONTENT.value="";
+	EDIT_HTML.setHTML('');
+}
+
+
+function LoadWindow()
+{
+  URL="/module/user_select?COMM_FLAG=1";
+  loc_x=document.body.scrollLeft+event.clientX-event.offsetX-100;
+  loc_y=document.body.scrollTop+event.clientY-event.offsetY+170;
+  window.showModalDialog(URL,self,"edge:raised;scroll:0;status:0;help:0;resizable:1;dialogWidth:350px;dialogHeight:350px;dialogTop:"+loc_y+"px;dialogLeft:"+loc_x+"px");
+//  window.open(URL,null,"height=400,width=550,status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top=150,left=100,resizable=yes");
+}
+
+function CheckSend()
+{
+  if(event.keyCode==10)
+  {
+    if(CheckForm())
+       document.form1.submit();
+  }
+}
+
+function SelectSMS()
+{
+  loc_x=(screen.availWidth-300)/2;
+  loc_y=event.clientY-100;
+  window.open("sms_list.php","SMS_LIST","status=0,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes,width=300,height=300,left="+loc_x+",top="+loc_y);
+}
+
+function td_calendar(fieldname)
+{
+  myleft=document.body.scrollLeft+event.clientX-event.offsetX-80;
+  mytop=document.body.scrollTop+event.clientY-event.offsetY+140;
+  window.showModalDialog("/inc/calendar.php?FIELDNAME="+fieldname,self,"edge:raised;scroll:0;status:0;help:0;resizable:1;dialogWidth:280px;dialogHeight:215px;dialogTop:"+mytop+"px;dialogLeft:"+myleft+"px");
+}
+function td_clock(fieldname)
+{
+  myleft=document.body.scrollLeft+event.clientX-event.offsetX-80;
+  mytop=document.body.scrollTop+event.clientY-event.offsetY+140;
+
+  window.showModalDialog("/inc/clock.php?FIELDNAME="+fieldname,self,"edge:raised;scroll:0;status:0;help:0;resizable:1;dialogWidth:280px;dialogHeight:120px;dialogTop:"+mytop+"px;dialogLeft:"+myleft+"px");
+}
+function show_tr(tr_id,tr_id1, btn)
+{
+   var tr = document.getElementById(tr_id),tr1 = document.getElementById(tr_id1), str_hide="隐藏", str_add="添加";
+   if(!tr)
+      return;
+   //alert(btn.innerText)
+   if(tr.style.display=="none")
+   {
+      tr.style.display="";
+      tr1.style.display="";
+      btn.innerText = str_hide+btn.innerText.substring(str_add.length,btn.innerText.length);
+   }
+   else
+   {
+      tr.style.display="none";
+      tr1.style.display="none";
+      btn.innerText = str_add+btn.innerText.substring(str_hide.length,btn.innerText.length);
+   }
+}
+function Load_Do()
+{
+   EDIT_HTML.SetHtml(document.form1.CONTENT.value);
+		StartValue=EDIT_HTML.getHTML();
+}
+var StartValue;
+function check_unload()
+{
+   if(mouse_is_out &amp;&amp; EDIT_HTML.getHTML()!=StartValue)
+      return '内容没有保存，确定不保存退出吗？';
+}
+
+</script>
+</head><body onbeforeunload="return check_unload();" onload="Load_Do();" topmargin="5" class="bodycolor">
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img height="20" align="absmiddle" width="22" src="../images/menu/sms.gif"><span class="big3"> 发送内部短信</span>
+    </td>
+  </tr>
+</tbody></table>
+
+ <table align="center" width="500" class="TableBlock">
+  <form onsubmit="return CheckForm();" name="form1" method="post" action="submit.php"></form>
+     <tbody><tr>
+      <td class="TableHeader">
+      	收信人
+      </td>
+    </tr>
+   <tr>
+      <td class="TableData">
+        <input type="hidden" value="" name="TO_ID">
+        <textarea readonly="" wrap="yes" class="BigStatic" rows="5" name="TO_NAME" cols="48"></textarea>
+        &nbsp;<a title="添加收信人" onclick="LoadWindow()" class="orgAdd" href="#">添加</a>
+        &nbsp;<a title="清空收信人" onclick="clear_user()" class="orgClear" href="#">清空</a>
+      </td>
+    </tr>
+     <tr>
+      <td class="TableHeader">
+      	短信内容
+      </td>
+    </tr>
+   <tr>
+      <td class="TableData">
+         <input type="hidden" value="" name="CONTENT">
+		<iframe scrolling="no" height="200" frameborder="0" width="100%" type="text/x-scriptlet" viewastext="" src="/module/ewebeditor/ewebeditor.htm?id=CONTENT&amp;style=sms" name="EDIT_HTML"></iframe>
+
+		<br>
+		&nbsp;按Ctrl+回车键发送消息
+         <div style="height: 20px; padding: 5px 0px 2px;"><a onclick="clear_sms();" href="javascript:;">清空内容</a> - <a onclick="SelectSMS();" href="javascript:;">添加常用短语</a> - <a onclick="show_tr('tr_send_time_title','tr_send_time_detail',this);" href="javascript:;">添加提醒时间</a> - <a onclick="show_tr('tr_send_time1_title','tr_send_time1_detail',this);" href="javascript:;">添加有效时间</a> </div>
+
+      </td>
+    </tr>
+     <tr style="display: none;" id="tr_send_time_title">
+      <td class="TableHeader">
+      	提醒时间
+      </td>
+    </tr>
+     <tr style="display: none;" id="tr_send_time_detail">
+      <td class="TableData">
+	<input type="text" value="" class="BigInput" maxlength="22" size="20" name="SEND_TIME">
+    <img border="0" onclick="td_calendar('form1.SEND_TIME');" style="" src="/images/menu/calendar.gif">
+    <img border="0" onclick="td_clock('form1.SEND_TIME');" style="" src="/images/menu/clock.gif">
+     &nbsp;为空则默认当前时间 </td>
+    </tr>
+     <tr style="display: none;" id="tr_send_time1_title">
+      <td class="TableHeader">
+      	有效时间
+      </td>
+    </tr>
+     <tr style="display: none;" id="tr_send_time1_detail">
+      <td class="TableData">
+	<input type="text" value="" class="BigInput" maxlength="22" size="20" name="SEND_TIME1">
+    <img border="0" onclick="td_calendar('form1.SEND_TIME1');" style="" src="/images/menu/calendar.gif">
+    <img border="0" onclick="td_clock('form1.SEND_TIME1');" style="" src="/images/menu/clock.gif">
+     &nbsp;为空则默认永久有效 </td>
+    </tr>
+    <tr align="center" class="TableControl">
+      <td nowrap="">
+        <input type="submit" class="BigButtonA" value="发送">&nbsp;&nbsp;
+        <input type="button" onclick="history.back();" class="BigButtonA" value="返回">
+      </td>
+    </tr>
+  </tbody></table>
+
+
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

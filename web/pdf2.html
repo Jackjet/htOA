@@ -1,0 +1,58 @@
+
+
+
+
+<HTML>
+  <HEAD>
+    <title>WEB页面导出为EXCEL文档的方法
+    </title>
+    <SCRIPT LANGUAGE="javascript">
+ function MakeWord()
+ {
+  var word = new ActiveXObject("Word.Application");
+ // var doc = word .documents.open("c:\test.doc");     //此处为打开已有的模版
+ var doc = word .Documents.Add("",0,1);//不打开模版直接加入内容
+ var   Range=doc.Range();  
+
+ var div = document.getElementById("test");
+  var sel = document.body.createTextRange();
+  sel.moveToElementText(div);//此处form是页面form的id，此处也可以使用div
+  sel.select();
+  sel.execCommand("Copy");
+  Range.Paste();
+  word .Application.Visible = true;
+  doc .saveAs("c:\\ba.doc");     //存放到指定的位置注意路径一定要是“\\”不然会报错
+ }
+</SCRIPT>
+  </HEAD>
+<body>
+<input type="button" onclick="javascript:MakeWord();" value="导出页面到Word">
+<BR>
+<div id="test">
+<table id = "PrintA" width="100%" border="1" cellspacing="0" cellpadding="0" bgcolor = "#61FF13">
+<TR style="text-align : center;">
+ <TD>单元格A</TD>
+ <TD>单元格A</TD>
+ <TD>单元格A</TD>
+ <TD>单元格A</TD>
+</TR>
+<TR>
+ <TD colSpan=4 style="text-align : center;"><font color="BLUE" face="Verdana">单元格合并行A</FONT></TD>
+</TR>
+</TABLE>
+<BR>
+<table id = "PrintB" width="100%" border="1" cellspacing="0" cellpadding="0">
+<TR style="text-align : center;">
+ <TD>单元格B</TD>
+ <TD>单元格B</TD>
+ <TD>单元格B</TD>
+ <TD>单元格B</TD>
+</TR>
+<TR>
+ <TD colSpan=4 style="text-align : center;">单元格合并行B</TD>
+</TR>
+</TABLE>
+</div>
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

@@ -1,0 +1,75 @@
+﻿div .ui-jqgrid-title{
+    padding-left: 20px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+}
+div .ui-jqgrid-titlebar, .ui-widget-header{
+    font-family: "黑体";
+    font-size: 14px;
+    /*border-bottom: 1px solid rgba(13, 232, 245, 0.59);*/
+
+}
+div .ui-corner-top,.ui-helper-clearfix{
+
+}
+.ui-layout-west{
+
+    height: auto!important;
+}
+.ui-state-default-west-closed{
+		top: 10px!important;
+	background-color: #084a52 !important;
+
+}
+.ui-state-default-open{
+	margin: 0 auto!important;
+    padding: 0 auto!important;
+    border-bottom: none;!important;
+    /*top: 8px!important;*/
+    width: 1px;
+    height: 30px;
+    /*display: none;!important;*/
+	
+}
+.ui-layout-pane-west{
+    margin:9px 0px 50px 10px!important;
+    height: auto;
+}
+
+.ui-layout-toggler,.ui-layout-toggler-west, .ui-layout-toggler-open, .ui-layout-toggler-west-open{
+    margin: 0 auto!important;
+    padding: 0 auto!important;
+    width:15px!important;
+    height: 20px;!important;
+    background-image: url("/img/frame2_01b.gif");
+    /*background-color: #f52f5b !important;*/
+    display: none;!important;
+}
+.ui-layout-toggler-open:hover{
+    background-image: url("/img/frame2_01.gif");
+}
+/*ui-layout-toggler ui-layout-toggler-west ui-layout-toggler-closed ui-layout-toggler-west-closed*/
+.ui-layout-toggler-closed{
+    width:15px!important;
+    background-image: url("/img/frame2_02b.gif");
+}
+.ui-layout-toggler-closed:hover{
+    background-image: url("/img/frame2_02.gif");
+}
+.ui-jqgrid .loading {
+    position: absolute;
+    top: 45%;
+    left: 45%;
+    width: auto;
+    z-index: 101;
+    padding: 6px;
+    margin: 5px;
+    text-align: center;
+    font-weight: normal;
+    display: none;
+    vertical-align: middle;
+    border: solid 1px #0cbdef !important;
+    border-radius: 5px!important;
+    color: #588bff !important;
+}

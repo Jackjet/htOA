@@ -1,0 +1,186 @@
+BODY {
+	FONT-SIZE: 12px; FONT-FAMILY: helvetica,arial,sans-serif
+}
+TD {
+	FONT-SIZE: 12px
+}
+FORM {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px; PADDING-TOP: 0px
+}
+IMG {
+	BORDER-TOP-WIDTH: 0px; BORDER-LEFT-WIDTH: 0px; BORDER-BOTTOM-WIDTH: 0px; BORDER-RIGHT-WIDTH: 0px
+}
+#phd {
+	CLEAR: both; FONT-SIZE: 12px; MARGIN: 0px auto; WIDTH: 750px; HEIGHT: 40px
+}
+#phd .lg {
+	FLOAT: left; POSITION: absolute; TOP: 30px
+}
+#phd .donate {
+	LEFT: 150px; POSITION: relative; TOP: 30px
+}
+#phd .donate A {
+	TEXT-DECORATION: none
+}
+A:link {
+	TEXT-DECORATION: none
+}
+A:hover {
+	TEXT-DECORATION: none
+}
+A:visited {
+	TEXT-DECORATION: none
+}
+.ms1 {
+	BACKGROUND: url(/extmail/default/images/splash.jpg) #79a4d0 no-repeat left top
+}
+.mantle_outer {
+	HEIGHT: 415px
+}
+#mantle {
+	CLEAR: both; LEFT: 0px; MARGIN: 20px auto auto; WIDTH: 750px; POSITION: relative; TOP: 0px
+}
+#mantle .tl {
+	OVERFLOW: hidden; WIDTH: 3px; POSITION: absolute; HEIGHT: 3px
+}
+#mantle .tr {
+	OVERFLOW: hidden; WIDTH: 3px; POSITION: absolute; HEIGHT: 3px
+}
+#mantle .bl {
+	OVERFLOW: hidden; WIDTH: 3px; POSITION: absolute; HEIGHT: 3px
+}
+#mantle .br {
+	OVERFLOW: hidden; WIDTH: 3px; POSITION: absolute; HEIGHT: 3px
+}
+#mantle .tl {
+	BACKGROUND: url(/extmail/default/images/rb.gif) no-repeat; LEFT: 0px; FLOAT: left; TOP: 0px
+}
+#mantle .tr {
+	RIGHT: 0px; BACKGROUND: url(/extmail/default/images/rb.gif) no-repeat -3px 0px; FLOAT: right; TOP: 0px
+}
+#mantle .bl {
+	BACKGROUND: url(/extmail/default/images/rb.gif) no-repeat 0px -3px; LEFT: 0px; FLOAT: left; BOTTOM: 0px
+}
+#mantle .br {
+	RIGHT: 0px; BACKGROUND: url(/extmail/default/images/rb.gif) no-repeat -3px -3px; FLOAT: right; BOTTOM: 0px
+}
+#mantle .fix {
+	HEIGHT: 157px! important
+}
+#mantle .fix B {
+	MARGIN-TOP: 100px; FONT-WEIGHT: normal; FONT-SIZE: 20px; MARGIN-LEFT: 230px; COLOR: #fff
+}
+#mantle .fixa {
+	MARGIN-TOP: 0px; FONT-WEIGHT: bold; FONT-SIZE: 14px; MARGIN-LEFT: 200px; COLOR: #fff; LINE-HEIGHT: 20px; PADDING-TOP: 20px
+}
+#mantle .alpha {
+	LEFT: 0px; WIDTH: 750px; BOTTOM: 0px; POSITION: absolute; HEIGHT: 40px
+}
+#mantle .login {
+	RIGHT: 20px; WIDTH: 245px; POSITION: absolute; TOP: -20px; HEIGHT: 405px; BACKGROUND-COLOR: #fff
+}
+#mantle .intro {
+	FONT-SIZE: 14px; LEFT: 15px; WIDTH: 205px; COLOR: #fff; LINE-HEIGHT: 20px; POSITION: absolute; TOP: 15px; TEXT-ALIGN: left; _top: 45px
+}
+#mantle .intro2 {
+	FONT-SIZE: 14px; LEFT: 15px; WIDTH: 205px; COLOR: #fff; LINE-HEIGHT: 20px; POSITION: absolute; TOP: 15px; TEXT-ALIGN: left; _top: 45px
+}
+#mantle .intro B {
+	FONT-WEIGHT: normal; FONT-SIZE: 20px
+}
+#mantle .intro IMG {
+	MARGIN-BOTTOM: 0.8em
+}
+#mantle .intro2 IMG {
+	MARGIN-BOTTOM: 1.2em
+}
+#mantle .intro2 A:link {
+	FONT-WEIGHT: bold; COLOR: #b12f11
+}
+#mantle .intro2 A:visited {
+	FONT-WEIGHT: bold; COLOR: #b12f11
+}
+#mantle .hasid {
+	CLEAR: both; PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN-LEFT: 68px; PADDING-TOP: 20px; TEXT-ALIGN: left
+}
+#mantle .hasid IMG {
+	MARGIN-BOTTOM: 0.3em
+}
+#mantle .plus {
+	LEFT: 0px; WIDTH: 460px; POSITION: absolute; TOP: 170px; HEIGHT: 200px
+}
+#mantle A:link {
+	COLOR: #41679b
+}
+#mantle A:visited {
+	COLOR: #41679b
+}
+#pt1 {
+	BORDER-RIGHT: #ffff00 1px solid; BORDER-TOP: #ffff00 1px solid; BORDER-LEFT: #ffff00 1px solid; WIDTH: 120px; BORDER-BOTTOM: #ffff00 1px solid; HEIGHT: 22px
+}
+#pt2 {
+	BORDER-RIGHT: #ffff00 1px solid; BORDER-TOP: #ffff00 1px solid; BORDER-LEFT: #ffff00 1px solid; WIDTH: 120px; BORDER-BOTTOM: #ffff00 1px solid; HEIGHT: 22px
+}
+.ul1 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 10px 0px 0px 7px; PADDING-TOP: 0px
+}
+.ul1 LI {
+	MARGIN-BOTTOM: 0.5em; TEXT-ALIGN: left
+}
+.ul2 {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 0px; PADDING-BOTTOM: 0px; MARGIN: 0px 0px 0px 20px; PADDING-TOP: 0px
+}
+.ul2 LI {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 10px; FONT-SIZE: 12px; MARGIN-BOTTOM: 0.7em; PADDING-BOTTOM: 0px; COLOR: #5678a6; LINE-HEIGHT: 20px; PADDING-TOP: 5px; LIST-STYLE-TYPE: none; TEXT-ALIGN: left
+}
+.ul2 STRONG {
+	FONT-SIZE: 14px
+}
+.ul2 .ico1 {
+	
+}
+.tb2 A:link {
+	COLOR: #41679b
+}
+.tb2 A:visited {
+	COLOR: #41679b
+}
+.tb2 {
+	MARGIN: auto
+}
+.tb2 TD {
+	TEXT-ALIGN: left
+}
+.sp1px {
+	COLOR: #8a8a8a; HEIGHT: 1px
+}
+.headermenu_popup {
+	BORDER-RIGHT: #8a8a8a 1px solid; BORDER-TOP: #8a8a8a 1px solid; MARGIN-TOP: 1px; BORDER-LEFT: #8a8a8a 1px solid; COLOR: #154ba0; BORDER-BOTTOM: #8a8a8a 1px solid
+}
+.headermenu_popup A {
+	COLOR: #154ba0; TEXT-DECORATION: none
+}
+.popupmenu_highlight {
+	PADDING-RIGHT: 8px; PADDING-LEFT: 8px; BACKGROUND: #999; PADDING-BOTTOM: 3px; FONT: 12px Tahoma, Verdana; CURSOR: pointer; COLOR: #ffffff; PADDING-TOP: 3px; WHITE-SPACE: nowrap
+}
+.popupmenu_highlight A {
+	PADDING-RIGHT: 8px; PADDING-LEFT: 8px; PADDING-BOTTOM: 3px; COLOR: #ffffff; PADDING-TOP: 3px; TEXT-DECORATION: none
+}
+.popupmenu_popup {
+	BORDER-RIGHT: #86b9d6 1px solid; BORDER-TOP: #86b9d6 1px solid; BORDER-LEFT: #86b9d6 1px solid; COLOR: #154ba0; BORDER-BOTTOM: #86b9d6 1px solid
+}
+.popupmenu_option {
+	PADDING-RIGHT: 8px; PADDING-LEFT: 8px; BACKGROUND: #fff; PADDING-BOTTOM: 3px; FONT: 12px Tahoma, Verdana; CURSOR: pointer; COLOR: #154ba0; PADDING-TOP: 3px; WHITE-SPACE: nowrap
+}
+.popupmenu_option A {
+	PADDING-RIGHT: 8px; PADDING-LEFT: 8px; PADDING-BOTTOM: 3px; COLOR: #154ba0; PADDING-TOP: 3px; TEXT-DECORATION: none
+}
+.tip {
+	COLOR: #999
+}
+.input_n {
+	PADDING-RIGHT: 0px; PADDING-LEFT: 2px; PADDING-BOTTOM: 0px; FONT: 12px tahoma; WIDTH: 150px; BORDER-TOP-STYLE: inset; PADDING-TOP: 2px; BORDER-RIGHT-STYLE: inset; BORDER-LEFT-STYLE: inset; HEIGHT: 17px! important; BORDER-BOTTOM-STYLE: inset
+}
+.input_s {
+	FONT-WEIGHT: bold; WIDTH: 62px; BORDER-TOP-STYLE: outset; PADDING-TOP: 2px; BORDER-RIGHT-STYLE: outset; BORDER-LEFT-STYLE: outset; HEIGHT: 27px; BORDER-BOTTOM-STYLE: outset
+}

@@ -1,0 +1,201 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>新闻列表</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',120000);
+</script>
+
+<script>
+function open_news(NEWS_ID,FORMAT)
+{
+ URL="read_news.php?NEWS_ID="+NEWS_ID;
+ myleft=(screen.availWidth-650)/2;
+ mytop=100
+ mywidth=650;
+ myheight=500;
+ if(FORMAT=="1")
+ {
+    myleft=0;
+    mytop=0
+    mywidth=screen.availWidth;
+    myheight=screen.availHeight-40;
+ }
+ window.open(URL,"read_news","height="+myheight+",width="+mywidth+",status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top="+mytop+",left="+myleft+",resizable=yes");
+}
+
+function re_news(NEWS_ID)
+{
+ URL="/general/news/show/re_news.php?NEWS_ID="+NEWS_ID;
+ myleft=(screen.availWidth-500)/2;
+ window.open(URL,"read_news","height=500,width=550,status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top=100,left="+myleft+",resizable=yes");
+}
+function order_by(field,asc_desc)
+{
+ window.location="news.php?start=0&amp;TYPE=0&amp;FIELD="+field+"&amp;ASC_DESC="+asc_desc;
+}
+
+function change_type(type)
+{
+ window.location="news.php?start=0&amp;TYPE="+type+"&amp;FIELD=&amp;ASC_DESC=";
+}
+function read_all()
+{
+  msg='确认要标记所有新闻为已读吗？';
+  if(window.confirm(msg))
+  {
+    url="read_all.php";
+    location=url;
+  }
+}
+</script>
+
+</head><body topmargin="5" class="bodycolor">
+
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img align="absmiddle" src="../images/notify_open.gif"><span class="big3"> 新闻</span>&nbsp;
+       <select onchange="change_type(this.value);" class="SmallSelect" name="TYPE">
+          <option selected="" value="0">所有类型</option>
+                    <option value="">无类型</option>
+       </select>
+    </td>
+<td align="right" valign="bottom" class="small1"><script>function goto_page()
+{var page_no=parseInt(document.all('page_no').value);
+var page_size=parseInt(document.all('page_size').value);
+if(isNaN(page_no)||page_no&lt;1||page_no&gt;1){alert("页数必须为1-1");
+return;
+}window.location="/general/news/show/news.php?page_size="+page_size+"&amp;start="+(page_no-1)*10;} function input_page_no(){if(event.keyCode==13) goto_page();if(event.keyCode&lt;47||event.keyCode&gt;57) event.returnValue=false;}</script><div class="pageArea" id="pageArea">第1/1页&nbsp;<a title="首页" class="pageFirstDisable" id="pageFirst" href="javascript:;"></a> <a title="上一页" class="pagePreviousDisable" id="pagePrevious" href="javascript:;"></a>&nbsp;<a title="下一页" class="pageNextDisable" id="pageNext" href="javascript:;"></a> <a title="末页" class="pageLastDisable" id="pageLast" href="javascript:;"></a>每页<input type="text" style="text-align: center;" class="SmallInput" value="10" name="page_size" id="page_size" size="3">条第<input type="text" style="text-align: center;" onkeypress="input_page_no()" class="SmallInput" value="1" name="page_no" id="page_no" size="3">页  <a title="转到" class="pageGoto" id="pageGoto" href="javascript:goto_page();"></a></div></td>
+    </tr>
+</tbody></table>
+
+<table width="100%" class="TableList">
+  <tbody><tr class="TableHeader">
+      <td nowrap="" align="center" style="" onclick="order_by('SUBJECT','1');"><u>标题</u></td>
+      <td nowrap="" align="center">类型</td>
+      <td nowrap="" align="center" style="" onclick="order_by('NEWS_TIME','0');"><u>发布时间</u><img height="10" border="0" width="11" src="/images/arrow_down.gif"></td>
+      <td nowrap="" align="center" style="" onclick="order_by('CLICK_COUNT','1');"><u>点击次数</u></td>
+      <td nowrap="" align="center">评论(条)</td>
+      <td nowrap="" align="center">新闻评论</td>
+    </tr>
+
+    <tr class="TableLine1">
+      <td title="fdsafdsafdsa">
+      <a href="javascript:open_news('9','0');">fdsafdsafdsa</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2010-05-28 08:14:33</td>
+      <td nowrap="" align="center">13</td>
+      <td nowrap="" align="center">1</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('9');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine2">
+      <td title="3333333333333333333333333333333333333">
+      <a href="javascript:open_news('8','0');">3333333333333333333333333333333333333</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2010-02-09 03:29:33</td>
+      <td nowrap="" align="center">58</td>
+      <td nowrap="" align="center">3</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('8');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine1">
+      <td title="太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我我太太太太太太太太太太我我我我我我我我我9">
+      <a href="javascript:open_news('7','0');">太太太太太太太太太太我我我我我我我我我我太太太太太...</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2009-08-28 02:51:34</td>
+      <td nowrap="" align="center">175</td>
+      <td nowrap="" align="center">5</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('7');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine2">
+      <td title="奥运冠军赴香港汇演">
+      <a href="javascript:open_news('6','0');">奥运冠军赴香港汇演</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2008-08-29 03:05:12</td>
+      <td nowrap="" align="center">301</td>
+      <td nowrap="" align="center">12</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('6');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine1">
+      <td title="夏斌：从紧货币政策绝不能变">
+      <a href="javascript:open_news('5','0');">夏斌：从紧货币政策绝不能变</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2008-07-17 07:06:46</td>
+      <td nowrap="" align="center">104</td>
+      <td nowrap="" align="center">9</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('5');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine2">
+      <td title="上半年国内生产总值130619亿元 同比增10.4%">
+      <a href="javascript:open_news('4','0');">上半年国内生产总值130619亿元 同比增10.4%</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2008-07-17 07:05:56</td>
+      <td nowrap="" align="center">90</td>
+      <td nowrap="" align="center">1</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('4');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine1">
+      <td title="1111">
+      <a href="javascript:open_news('2','0');">1111</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2008-07-14 02:39:42</td>
+      <td nowrap="" align="center">28</td>
+      <td nowrap="" align="center">2</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('2');">评论</a>
+      </td>
+    </tr>
+    <tr class="TableLine2">
+      <td title="2222222222">
+      <a href="javascript:open_news('1','0');">2222222222</a>
+      </td>
+      <td nowrap="" align="center"></td>
+      <td nowrap="" align="center">2008-07-11 05:39:30</td>
+      <td nowrap="" align="center">29</td>
+      <td nowrap="" align="center">2</td>
+      <td nowrap="" align="center">
+      <a href="javascript:re_news('1');">评论</a>
+      </td>
+    </tr>
+
+</tbody></table>
+<br>
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#000000" width="100%" class="small">
+  <tbody><tr>
+      <td nowrap="" align="center" width="80" class="TableContent"><b>快捷操作：</b></td>
+      <td nowrap="" class="TableControl">&nbsp;
+   			<a title="标记所有新闻为已读" href="javascript:read_all();">
+   				<img border="0" align="absMiddle" src="../images/email_open.gif"> 标记所有新闻为已读
+   			</a>&nbsp;&nbsp;
+      </td>
+</tr>
+</tbody></table>
+
+
+<SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

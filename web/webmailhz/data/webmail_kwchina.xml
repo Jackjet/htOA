@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE SYSDATA  SYSTEM "D:\tomcat55\webapps\ROOT\webmailhz\lib\xml\sysdata.dtd">
+
+
+<SYSDATA>
+  <DOMAIN>
+    <NAME>kwchina.com</NAME>
+    <DEFAULT_HOST>mail.kwchina.com</DEFAULT_HOST>
+    <AUTHENTICATION_HOST>mail.kwchina.com</AUTHENTICATION_HOST>
+    <RESTRICTED/>
+    <ALLOWED_HOST>mail.kwchina.com</ALLOWED_HOST></DOMAIN>
+
+  <GROUP name="default">
+    <CONFIG type="bool">
+      <KEY>SHOW ADVERTISEMENTS</KEY>
+      <DESCRIPTION>Whether or not to include the WebMail advertisement messages in default user signatures and HTTP response headers</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>ENABLE POP3</KEY>
+      <DESCRIPTION>Enable pop3 from Sun Microsystems, Inc</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>FOLDER TRY LOGIN PASSWORD</KEY>
+      <DESCRIPTION>Try to connect folders with the user's login password if authentication fails</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="integer">
+      <KEY>SESSION TIMEOUT</KEY>
+      <DESCRIPTION>Timeout in milliseconds after which a WebMailSession is closed automatically.</DESCRIPTION>
+      <VALUE>3600000</VALUE></CONFIG>
+
+    <CONFIG type="choice">
+      <KEY>AUTH</KEY>
+      <DESCRIPTION>Authentication method to use.</DESCRIPTION>
+      <VALUE>IMAP</VALUE>
+      <CHOICE>POP3</CHOICE></CONFIG>
+
+    <CONFIG type="string">
+      <KEY>ADVERTISEMENT SIGNATURE PATH</KEY>
+      <DESCRIPTION>Path to advertisement to attach to all outgoing messages (either absolute or relative to data directory)</DESCRIPTION>
+      <VALUE>advertisement.sig</VALUE></CONFIG>
+
+    <CONFIG type="string">
+      <KEY>SMTP HOST</KEY>
+      <DESCRIPTION>Host used to send messages via SMTP. Should be localhost or your SMTP smarthost</DESCRIPTION>
+      <VALUE>mail.kwchina.com</VALUE></CONFIG>
+
+    <CONFIG type="integer">
+      <KEY>CACHE SIZE FILE</KEY>
+      <DESCRIPTION>Size for the file system cache for every locale</DESCRIPTION>
+      <VALUE>40</VALUE></CONFIG>
+
+    <CONFIG type="choice">
+      <KEY>DEFAULT PROTOCOL</KEY>
+      <DESCRIPTION>Protocol to be used as default</DESCRIPTION>
+      <VALUE>imap</VALUE>
+      <CHOICE>imap</CHOICE>
+      <CHOICE>pop3</CHOICE></CONFIG>
+
+    <CONFIG type="integer">
+      <KEY>MAX ATTACH SIZE</KEY>
+      <DESCRIPTION>Maximum size of attachments in bytes</DESCRIPTION>
+      <VALUE>1000000</VALUE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>ENABLE IMAP</KEY>
+      <DESCRIPTION>Enable imap from Sun Microsystems, Inc</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="integer">
+      <KEY>CACHE SIZE USER</KEY>
+      <DESCRIPTION>Size of the user cache</DESCRIPTION>
+      <VALUE>100</VALUE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>ADVERTISEMENT ATTACH</KEY>
+      <DESCRIPTION>Attach advertisement from ADVERTISEMENT SIGNATURE PATH to each outgoing message</DESCRIPTION>
+      <VALUE>NO</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="string">
+      <KEY>MIME TYPES</KEY>
+      <DESCRIPTION>File with mime type information.</DESCRIPTION>
+      <VALUE>D:\Tomcat\webapps\webmailhz\lib\mime.types</VALUE></CONFIG>
+
+    <CONFIG type="integer">
+      <KEY>LOGLEVEL</KEY>
+      <DESCRIPTION>How much debug output will be written in the logfile</DESCRIPTION>
+      <VALUE>5</VALUE></CONFIG>
+
+    <CONFIG type="string">
+      <KEY>ADVERTISEMENT MESSAGE</KEY>
+      <DESCRIPTION>Advertisement to attach to user signatures</DESCRIPTION>
+      <VALUE>HZ JWebMail 1.0, built with JDK1.5</VALUE></CONFIG>
+
+    <CONFIG type="string">
+      <KEY>ADMIN PASSWORD</KEY>
+      <DESCRIPTION>Password for administrator connections. Shown encrypted, but enter plain password to change.</DESCRIPTION>
+      <VALUE>Secret</VALUE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>ENABLE NNTP</KEY>
+      <DESCRIPTION>Enable nntp from dog@dog.net.uk</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+
+    <CONFIG type="bool">
+      <KEY>ENABLE MBOX</KEY>
+      <DESCRIPTION>Enable mbox from dog@dog.net.uk</DESCRIPTION>
+      <VALUE>YES</VALUE>
+      <CHOICE>YES</CHOICE>
+      <CHOICE>NO</CHOICE></CONFIG>
+</GROUP>
+</SYSDATA>

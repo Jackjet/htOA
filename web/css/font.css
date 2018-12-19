@@ -1,0 +1,10 @@
+@font-face{
+    font-family:'SingleMaltaRegular';
+    src:url('/css/fonts/_-webfont.eot');
+    src:url('/css/fonts/_-webfont.eot?#iefix')format('embedded-opentype'),
+    url('/css/fonts/_-webfont.woff')format('woff'),
+    url('/css/fonts/_.ttf')format('truetype'),
+    url('/css/fonts/_-webfont.svg#SingleMaltaRegular')format('svg');
+    font-weight:normal;
+    font-style:normal;
+}

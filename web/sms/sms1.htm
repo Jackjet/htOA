@@ -1,0 +1,166 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>短信息</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+<script src="../inc/mytable.js"></script>
+<link href="../css/theme/7/sms.css" type="text/css" rel="stylesheet">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',60000);
+function show_msg(SMS_ID, start)
+{
+	if($('tr'+SMS_ID).style.display=='block')
+	{
+	   $('tr'+SMS_ID).style.display='none'
+	   $('img'+SMS_ID).src="/images/collapsed.gif";
+	   return;
+	}
+	$('tr'+SMS_ID).style.display='block';
+	$('img'+SMS_ID).src="/images/expanded.gif";
+	if($('msg'+SMS_ID).innerHTML.toLowerCase().indexOf("&lt;/div&gt;")&gt;0)
+	   return;
+	
+	$('msg'+SMS_ID).innerHTML="&lt;img src='/images/loading.gif' height='20' width='20' align='absMiddle'&gt; 加载中，请稍候……";
+
+	var req=getXMLHttpObj();
+	req.open("GET","../show_msg.php?SMS_ID="+SMS_ID+"&amp;start="+start,true);
+	req.onreadystatechange=function(){if(req.readyState==4)$("msg"+SMS_ID).innerHTML=req.responseText;};
+	req.send(null);
+}
+
+function check_all()
+{
+ for (i=0;i&lt;document.all("email_select").length;i++)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").item(i).checked=true;
+   else
+      document.all("email_select").item(i).checked=false;
+ }
+
+ if(i==0)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").checked=true;
+   else
+      document.all("email_select").checked=false;
+ }
+}
+
+function check_one(el)
+{
+   if(!el.checked)
+      document.all("allbox").checked=false;
+}
+
+function delete_all(DEL_TYPE)
+{
+ if(DEL_TYPE==1)
+    msg="确认要删除所有未提醒的短信息吗？";
+ else
+    msg="确认要删除所有已发送的短信息吗？";
+ if(window.confirm(msg))
+ {
+  URL="delete_all.php?CUR_TIME=2010-08-11 08:28:03&amp;DEL_TYPE="+DEL_TYPE;
+  window.location=URL;
+ }
+}
+
+function delete_mail()
+{
+  delete_str="";
+  for(i=0;i&lt;document.all("email_select").length;i++)
+  {
+
+      el=document.all("email_select").item(i);
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(i==0)
+  {
+      el=document.all("email_select");
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(delete_str=="")
+  {
+     alert("要删除短消息，请至少选择其中一条。");
+     return;
+  }
+
+  msg='确认要删除所选短消息么？';
+  if(window.confirm(msg))
+  {
+    url="delete.php?DELETE_STR="+ delete_str +"&amp;start=0";
+    location=url;
+  }
+}
+
+
+function read_all()
+{
+  delete_str="";
+  for(i=0;i&lt;document.all("email_select").length;i++)
+  {
+
+      el=document.all("email_select").item(i);
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(i==0)
+  {
+      el=document.all("email_select");
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(delete_str=="")
+  {
+     alert("要取消短消息提醒，请至少选择其中一条。");
+     return;
+  }
+
+  msg='确认要取消所选短消息么提醒？';
+  if(window.confirm(msg))
+  {
+    url="read.php?DELETE_STR="+ delete_str +"&amp;start=0";
+    location=url;
+  }
+}
+</script>
+
+</head><body topmargin="5" class="bodycolor">
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img height="20" align="absmiddle" width="22" src="../images/email_close.gif"><span class="big3"> 未提醒的短信息</span><br>
+    </td>
+  </tr>
+</tbody></table>
+<br>
+
+<table align="center" width="324" class="MessageBox">
+  <tbody><tr>
+    <td class="msg info">
+      <div class="content">无未提醒的短信息</div>
+    </td>
+  </tr>
+</tbody></table>
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

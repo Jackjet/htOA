@@ -1,0 +1,4 @@
+.ui-jqgrid tr.jqgrow td { /*jqgrid中的td*/
+    border-bottom: 1px solid rgba(36, 98, 121, 0.69);
+
+}

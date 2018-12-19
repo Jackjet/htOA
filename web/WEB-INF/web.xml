@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+         version="2.4">
+
+    <display-name>OA</display-name>
+    
+    <context-param>
+		<param-name>systemName</param-name>
+		<param-value>OA System</param-value>
+	</context-param>
+
+	 <context-param>
+	     <param-name>mailserver</param-name>
+	     <!-- <param-value>htoa.haitongauto.com</param-value> -->
+	     <param-value>mail.haitongauto.com/owa</param-value>
+	 </context-param>
+	 
+	 <context-param>
+	     <param-name>mailserverIP</param-name>
+	     <!-- <param-value>htoa.haitongauto.com</param-value> -->
+	     <param-value>mail.haitongauto.com/owa</param-value>
+	 </context-param>
+	  
+	  <context-param>
+	     <param-name>mailport</param-name>
+	     <!-- <param-value>8080</param-value> -->
+	     <param-value>80</param-value>
+	  </context-param>  
+	  
+	  <!-- 域名称 -->
+	  <context-param>
+	     <param-name>domainName</param-name>
+	     <param-value>haitongauto.com</param-value>
+	  </context-param>  
+	  
+	  <!-- 域控制器地址 -->
+	  <context-param>
+	     <param-name>domainURL</param-name>
+	     <param-value>192.168.61.1</param-value>
+	  </context-param>  
+	  
+	  <!-- 域管理员账号 -->
+	  <context-param>
+	     <param-name>domainAdmin</param-name>
+	     <param-value>administrator</param-value>
+	  </context-param>  
+	  
+	  <!-- 域管理员密码 -->
+	  <context-param>
+	     <param-name>domainAdminPwd</param-name>
+	     <param-value>haitong</param-value>
+	  </context-param>  
+
+	
+	<!-- cas统一认证地址 222.68.245.243-->
+	<context-param>
+	     <param-name>casserver</param-name>
+	     <param-value>cp.haitongauto.com</param-value>
+	 </context-param>
+	 
+	 <context-param>
+	     <param-name>casserverIP</param-name>
+	     <param-value>192.168.61.86</param-value>
+	 </context-param>
+	  
+	  <context-param>
+	     <param-name>casport</param-name>
+	     <param-value>80</param-value>
+	  </context-param>  
+	
+	
+	  <!-- 档案系统FTP -->
+	  <context-param>
+	     <param-name>ftpUrl</param-name>
+	     <param-value>192.168.1.99</param-value>
+	  </context-param> 
+	  <context-param>
+	     <param-name>ftpPort</param-name>
+	     <param-value>21</param-value>
+	  </context-param> 
+	  <context-param>
+	     <param-name>ftpUserName</param-name>
+	     <param-value>archive</param-value>
+	  </context-param>  
+	  <context-param>
+	     <param-name>ftpPassword</param-name>
+	     <param-value>archive</param-value>
+	  </context-param>   
+	
+	
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            WEB-INF/config/applicationContext.xml
+            WEB-INF/config/spring-mvc.xml
+        </param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>log4jConfigLocation</param-name>
+        <param-value>/WEB-INF/config/log4j.properties</param-value>
+    </context-param>
+    
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param> 
+			<param-name>forceEncoding</param-name> 
+			<param-value>true</param-value> 
+		</init-param>
+        <init-param>
+           <param-name>encoding</param-name>
+           <param-value>utf-8</param-value>
+        </init-param>
+    </filter>
+    
+    <filter-mapping> 
+		<filter-name>encodingFilter</filter-name> 
+		<url-pattern>/*</url-pattern> 
+	</filter-mapping>
+	
+	<filter>   
+		<filter-name>SpringOpenEntityManagerInViewFilter</filter-name>   
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>   
+	</filter>
+	
+	<filter-mapping>  
+        <filter-name>SpringOpenEntityManagerInViewFilter</filter-name>  
+        <url-pattern>/*</url-pattern>  
+    </filter-mapping>
+    
+    
+    <!-- hibernate openSessionInViewFilter
+	<filter>
+		<filter-name>hibernateFilter</filter-name>
+		<filter-class>
+			org.springframework.orm.hibernate3.support.OpenSessionInViewFilter
+		</filter-class> -->
+		<!-- singleSession默认为true,若设为false则等于没用OpenSessionInView 
+		<init-param>
+			<param-name>singleSession</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>hibernateFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>-->
+    
+    
+    
+    <filter>
+    	<filter-name>AuthorizationFilter</filter-name>
+    	<filter-class>com.kwchina.core.sys.AuthorizationFilter</filter-class>
+    </filter>
+    
+    <filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/base/*</url-pattern>
+	</filter-mapping>
+		
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/core/*</url-pattern>
+	</filter-mapping>
+		
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/submit/*</url-pattern>
+	</filter-mapping>
+		
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/document/*</url-pattern>
+	</filter-mapping>
+		
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/cms/*</url-pattern>
+	</filter-mapping>
+	
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/bbs/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/address/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/personal/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/supervise/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+	   	<filter-name>AuthorizationFilter</filter-name>
+	   	<url-pattern>/club/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>AuthorizationFilter</filter-name>
+		<url-pattern>/meeting/*</url-pattern>
+	</filter-mapping>
+
+	<listener>
+    	<listener-class>com.kwchina.core.sys.SystemLauncher</listener-class>
+  	</listener>
+
+    <listener>
+        <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+     <!-- 定时同步域用户
+	<listener>
+	    <listener-class>
+	       com.kwchina.oa.sys.ContextListener
+	    </listener-class>
+	</listener>  -->
+	
+	 <!-- 定时自动结束活动 -->
+	<listener>
+	    <listener-class>
+	       com.kwchina.oa.sys.ClubListener
+	    </listener-class>
+	</listener> 
+	
+	<!-- 定时发送到app推送 
+	<listener>
+	    <listener-class>
+	       com.kwchina.oa.sys.PushListener
+	    </listener-class>
+	</listener> -->
+	
+	
+	<!-- ==================以下为CAS统一认证================ 
+	<listener>
+		<listener-class>org.jasig.cas.client.session.SingleSignOutHttpSessionListener</listener-class>
+	</listener>
+
+	<filter>
+		<filter-name>CASSingleSignOutFilter</filter-name>
+		<filter-class>org.jasig.cas.client.session.SingleSignOutFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CASSingleSignOutFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>CASFilter</filter-name>
+		<filter-class>org.jasig.cas.client.authentication.AuthenticationFilter</filter-class>
+		<init-param>
+			<param-name>casServerLoginUrl</param-name>
+			<param-value>http://192.168.61.86:8899/cas/login</param-value>
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name>
+			<param-value>http://localhost</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CASFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>CASValidationFilter</filter-name>
+		<filter-class>
+			org.jasig.cas.client.validation.Cas20ProxyReceivingTicketValidationFilter
+		</filter-class>
+		<init-param>
+			<param-name>casServerUrlPrefix</param-name>
+			<param-value>http://192.168.61.86:8899/cas</param-value>
+		</init-param>
+		<init-param>
+			<param-name>serverName</param-name>
+			<param-value>http://localhost</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>CASValidationFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>CASHttpServletRequestWrapperFilter</filter-name>
+		<filter-class>org.jasig.cas.client.util.HttpServletRequestWrapperFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CASHttpServletRequestWrapperFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter>
+		<filter-name>CASAssertionThreadLocalFilter</filter-name>
+		<filter-class>org.jasig.cas.client.util.AssertionThreadLocalFilter</filter-class>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>CASAssertionThreadLocalFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	
+	==================以上为CAS统一认证================ -->
+	
+	
+	
+	
+	
+	<!-- comet4j 
+    <listener>  
+        <description>Comet4J容器侦听</description>  
+        <listener-class>org.comet4j.core.CometAppListener</listener-class>  
+    </listener>  
+    <servlet>  
+        <description>Comet连接[默认:org.comet4j.core.CometServlet]</description>  
+        <display-name>CometServlet</display-name>  
+        <servlet-name>CometServlet</servlet-name>  
+        <servlet-class>org.comet4j.core.CometServlet</servlet-class>  
+    </servlet>  
+    <servlet-mapping>  
+        <servlet-name>CometServlet</servlet-name>  
+        <url-pattern>/comet</url-pattern>  
+    </servlet-mapping>  
+  
+    <listener>  
+        <description>TestComet</description>  
+        <listener-class>test.push.TestComet</listener-class>  
+    </listener>  
+	以上为comet4j --> 
+	
+	
+    
+   <!-- 发送短信 -->
+    <servlet>
+    	<servlet-name>smsservice</servlet-name>
+    	<servlet-class>com.kwchina.sms.misc.SMSServlet</servlet-class>    	
+    	<init-param>
+    		<param-name>smsQuartzConfig</param-name>
+    		<param-value>com/kwchina/sms/config/quartz.properties</param-value>
+    	</init-param>    	
+    	<init-param>
+    		<param-name>smsJobConfig</param-name>
+    		<param-value>com/kwchina/sms/config/quartz_jobs.xml</param-value>
+    	</init-param>    	
+    	<load-on-startup>1</load-on-startup>
+    </servlet>
+     
+     <servlet>
+      	 <servlet-name>mailLogin</servlet-name>
+         <servlet-class>com.kwchina.oa.servlet.NotesMailLogin</servlet-class>          
+     </servlet>
+     
+    <servlet>
+        <servlet-name>mvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>WEB-INF/config/spring-mvc.xml</param-value>
+        </init-param>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+		<servlet-name>Connector</servlet-name>
+		<servlet-class>
+			com.fredck.FCKeditor.connector.ConnectorServlet
+		</servlet-class>
+		<init-param>
+			<param-name>baseDir</param-name>
+			<param-value>/uploadfiles/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet>
+		<servlet-name>SimpleUploader</servlet-name>
+		<servlet-class>
+			com.fredck.FCKeditor.uploader.SimpleUploaderServlet
+		</servlet-class>
+		<init-param>
+			<param-name>baseDir</param-name>
+			<param-value>/uploadfiles/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsFile</param-name>
+			<param-value />
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsFile</param-name>
+			<param-value>
+				php|php3|php5|phtml|asp|aspx|ascx|jsp|cfm|cfc|pl|bat|exe|dll|reg|cgi
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsImage</param-name>
+			<param-value>jpg|gif|jpeg|png|bmp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsImage</param-name>
+			<param-value/>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsFlash</param-name>
+			<param-value>swf|fla</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsFlash</param-name>
+			<param-value />
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	
+	<!-- 
+	 <servlet>
+        	<servlet-name>action</servlet-name>
+        	<servlet-class>org.apache.struts.action.ActionServlet</servlet-class>        
+        
+        	<init-param>
+         		<param-name>config</param-name>
+         		<param-value>/WEB-INF/struts-config-mail.xml</param-value>
+      		</init-param>      	
+      	
+        	<load-on-startup>1</load-on-startup>
+    </servlet>	
+     -->	
+     
+     <servlet>
+        <servlet-name>Upload</servlet-name>
+        <servlet-class>com.kwchina.core.util.file.UploadServlet</servlet-class>
+        <init-param>
+      		<param-name>relativePath</param-name>
+      		<param-value>/upload/</param-value>
+    	</init-param>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>Upload</servlet-name>
+        <url-pattern>/servlet/Upload</url-pattern>
+    </servlet-mapping>
+    
+    
+    <servlet>
+        <servlet-name>DeleteFile</servlet-name>
+        <servlet-class>com.kwchina.core.util.file.DeleteFileServlet</servlet-class>       
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>DeleteFile</servlet-name>
+        <url-pattern>/servlet/deleteFile</url-pattern>
+    </servlet-mapping>
+	
+	 <servlet-mapping>
+         <servlet-name>mailLogin</servlet-name>
+         <url-pattern>/noteslogin</url-pattern>
+     </servlet-mapping>
+     
+	<servlet-mapping>
+        <servlet-name>mvc</servlet-name>
+        <url-pattern>*.do</url-pattern>
+    </servlet-mapping>
+    
+	<servlet-mapping>
+		<servlet-name>Connector</servlet-name>
+		<url-pattern>
+			/fckeditor/editor/filemanager/browser/default/connectors/jsp/connector
+		</url-pattern>
+	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>SimpleUploader</servlet-name>
+		<url-pattern>
+			/fckeditor/editor/filemanager/upload/simpleuploader
+		</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 
+	<servlet-mapping>
+        <servlet-name>action</servlet-name>
+        <url-pattern>*.mdo</url-pattern>
+    </servlet-mapping>
+     -->
+     
+     <!-- webservice相关 -->
+	<servlet>
+		<servlet-name>AxisServlet</servlet-name>
+		<servlet-class>org.apache.axis.transport.http.AxisServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>*.jws</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/services/*</url-pattern>
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>AxisServlet</servlet-name>
+		<url-pattern>/servlet/AxisServlet</url-pattern>
+	</servlet-mapping>
+	
+	
+
+    <welcome-file-list>
+        <welcome-file>login.jsp</welcome-file>
+    </welcome-file-list>
+
+    <session-config>
+        <session-timeout>0</session-timeout>
+    </session-config>
+    
+    <jsp-config>
+		<taglib>
+			<taglib-uri>/WEB-INF/core</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/c.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>/WEB-INF/fmt</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/fmt.tld</taglib-location>
+		</taglib>
+		<taglib>
+			<taglib-uri>/WEB-INF/fn</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/fn.tld</taglib-location>
+		</taglib>
+		
+		<taglib>
+  			<taglib-uri>/fckedit</taglib-uri> 
+  			<taglib-location>/WEB-INF/tlds/FCKeditor.tld</taglib-location> 
+  		</taglib>
+  			
+		<taglib>
+			<taglib-uri>fileNameView</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/fileNameView.tld</taglib-location>
+		</taglib>	
+			
+		<taglib>
+	  	  	<taglib-uri>/WEB-INF/viewTag</taglib-uri>
+	    	<taglib-location>/WEB-INF/tlds/viewTag.tld</taglib-location>
+	  	</taglib>
+	  	
+	  	<taglib>
+	  	  	<taglib-uri>/WEB-INF/cms</taglib-uri>
+	    	<taglib-location>/WEB-INF/tlds/core-cms.tld</taglib-location>
+	  	</taglib>
+	  	
+	  	<taglib>
+			<taglib-uri>functionAuthority</taglib-uri>
+			<taglib-location>/WEB-INF/tlds/functionAuthority.tld</taglib-location>
+		</taglib>
+			
+	</jsp-config>
+</web-app>

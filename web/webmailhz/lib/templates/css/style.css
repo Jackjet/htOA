@@ -1,0 +1,15 @@
+#coolweather_container {
+	BORDER-RIGHT: #c3ced9 0px solid; BORDER-TOP: #c3ced9 0px solid; FONT-SIZE: 12px; BORDER-LEFT: #c3ced9 0px solid; BORDER-BOTTOM: #c3ced9 0px solid; BACKGROUND-COLOR: #f9fbfc
+}
+#coolweather_hint {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; LINE-HEIGHT: 1.4em; PADDING-TOP: 5px
+}
+#coolweather_input_container {
+	PADDING-RIGHT: 5px; PADDING-LEFT: 5px; PADDING-BOTTOM: 5px; LINE-HEIGHT: 1.4em; PADDING-TOP: 5px
+}
+#coolweather_input {
+	WIDTH: 160px
+}
+#coolweather_div {
+	DISPLAY: none
+}

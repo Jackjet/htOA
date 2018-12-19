@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts-config PUBLIC
+       "-//Apache Software Foundation//DTD Struts Configuration 1.2//EN"
+       "http://struts.apache.org/dtds/struts-config_1_2.dtd">
+
+<struts-config>
+	<data-sources />
+	<form-beans>
+		<form-bean name="mailForm" type="com.kwchina.webmail.web.form.MailForm" />		
+	</form-beans>
+
+	<global-exceptions />
+	<global-forwards>  	     
+			<forward name="closeAndRelodParent" path="/inc/closeAndReloadParent.jsp"/>
+   			<forward name="redirectToPath" path="/inc/redirectToPath.jsp"/>
+   			<forward name="mailerror" path="/webmailhz/error.jsp"/>   			
+   	</global-forwards>
+   	
+
+	<action-mappings>
+		<action path="/webmail/mailLogin" name="mailForm"
+			type="com.kwchina.webmail.web.action.MailLogin" scope="request" parameter="method">
+			<forward name="success" path="/webmailhz/loginSuccess.jsp" />		
+			<forward name="fail" path="/webmailhz/login.jsp" />		
+		</action>
+		
+		<action path="/webmail/mailList" name="mailForm"
+			type="com.kwchina.webmail.web.action.MailListAction" scope="request" parameter="method">
+			<forward name="list" path="/webmailhz/listMail.jsp" />		
+			<forward name="login" path="/webmailhz/login.jsp" />			
+		</action>
+		
+		<action path="/webmail/mailMessage" name="mailForm"
+			type="com.kwchina.webmail.web.action.MailInforAction" scope="request" parameter="method">
+			<forward name="list" path="/webmailhz/readMail.jsp" />	
+			<forward name="edit" path="/webmailhz/compose.jsp" />
+			<forward name="getPerson" path="/webmailhz/address.jsp" />			
+			<forward name="sendresult" path="/webmailhz/sendResult.jsp" />		
+		</action>
+		
+		<action path="/webmail/showMime" name="mailForm"
+			type="com.kwchina.webmail.web.action.ShowMimeAction" scope="request" parameter="method">				
+			<forward name="edit" path="/webmailhz/userNormal.jsp" />			
+		</action>
+		
+		<action path="/webmail/userConfig" name="mailForm"
+			type="com.kwchina.webmail.web.action.UserConfigAction" scope="request" parameter="method">				
+			<forward name="edit" path="/webmailhz/userNormal.jsp" />			
+		</action>	
+		
+		<action path="/webmail/folderSetup" name="mailForm"
+			type="com.kwchina.webmail.web.action.FolderSetupAction" scope="request" parameter="method">	
+			<forward name="list" path="/webmailhz/userFolder.jsp" />			
+			<forward name="edit" path="/webmailhz/userFolder.jsp" />			
+		</action>		
+
+	</action-mappings>
+	
+	<plug-in className="org.springframework.web.struts.ContextLoaderPlugIn">
+		<set-property property="contextConfigLocation"
+			value="/WEB-INF/action-servlet*.xml"/>
+	</plug-in>	
+	
+	<plug-in className="org.apache.struts.tiles.TilesPlugin">
+		<set-property property="definitions-config"
+			value="/WEB-INF/tiles-defs-mail.xml"/>
+					
+		<set-property property="definitions-debug" value="2"/>
+		<set-property property="definitions-parser-details" value="2"/>
+		<set-property property="definitions-parser-validate" value="true"/>
+	</plug-in>
+
+</struts-config>

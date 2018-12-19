@@ -1,0 +1,131 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>新闻查询</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+
+<script language="JavaScript">
+function td_calendar(fieldname)
+{
+  myleft=document.body.scrollLeft+event.clientX-event.offsetX-80;
+  mytop=document.body.scrollTop+event.clientY-event.offsetY+140;
+
+  window.showModalDialog("/inc/calendar.php?FIELDNAME="+fieldname,self,"edge:raised;scroll:0;status:0;help:0;resizable:1;dialogWidth:280px;dialogHeight:215px;dialogTop:"+mytop+"px;dialogLeft:"+myleft+"px");
+}
+function LoadWindow()
+{
+  URL="/module/user_select";
+  loc_x=document.body.scrollLeft+event.clientX-event.offsetX-100;
+  loc_y=document.body.scrollTop+event.clientY-event.offsetY+170;
+  window.showModalDialog(URL,self,"edge:raised;scroll:0;status:0;help:0;resizable:1;dialogWidth:350px;dialogHeight:350px;dialogTop:"+loc_y+"px;dialogLeft:"+loc_x+"px");
+}
+
+function clear_user()
+{
+  document.form1.TO_NAME.value="";
+  document.form1.TO_ID.value="";
+}
+</script>
+</head><body topmargin="5" class="bodycolor">
+
+<table cellspacing="0" cellpadding="3" border="0" width="90%" class="small">
+  <tbody><tr>
+    <td class="Big"><img height="24" align="absMiddle" width="24" src="../images/menu/infofind.gif"><span class="big3"> 新闻查询</span>&nbsp;&nbsp;<span class="small1">指定多关键词可用 '|' 分开</span>
+    </td>
+  </tr>
+</tbody></table>
+
+
+ <table align="center" width="550" class="TableBlock">
+  <form name="form1" method="post" action="newsSearchResult.htm"></form>
+    <tbody><tr>
+      <td nowrap="" class="TableData">发布人：</td>
+      <td class="TableData">
+        <input type="hidden" value="" name="TO_ID">
+        <textarea readonly="" wrap="yes" class="BigStatic" rows="3" name="TO_NAME" cols="35"></textarea>
+        &nbsp;<a title="添加收件人" onclick="LoadWindow()" class="orgAdd" href="#">添加</a>
+        &nbsp;<a title="清空收件人" onclick="clear_user()" class="orgClear" href="#">清空</a>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" width="100" class="TableData"> 格式：</td>
+      <td class="TableData">
+      <select class="BigSelect" name="FORMAT">
+        <option selected="" value="">全部</option>
+        <option value="0">普通格式</option>
+        <option value="1">MHT格式</option>
+      </select>
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" class="TableData"> 类型：</td>
+      <td class="TableData"> 
+        <select class="BigSelect" name="TYPE_ID">
+          <option selected="" value="">全部</option>
+        </select>&nbsp;
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" width="100" class="TableData"> 标题：</td>
+      <td class="TableData">
+       <select class="BigSelect" name="SUBJECT_RELATION">
+        <option value="1">等于</option>
+        <option value="2">大于</option>
+        <option value="3">小于</option>
+        <option value="4">大于等于</option>
+        <option value="5">小于等于</option>
+        <option value="6">不等于</option>
+        <option value="7">开始为</option>
+        <option selected="" value="8">包含</option>
+        <option value="9">结束为</option>
+       </select>
+        <input type="text" value="" class="BigInput" maxlength="100" size="33" name="SUBJECT">
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" width="100" class="TableData"> 发布日期：</td>
+      <td class="TableData">
+        <input type="text" value="" class="BigInput" maxlength="10" size="12" name="SEND_TIME_MIN">
+        <img border="0" align="absMiddle" onclick="td_calendar('form1.SEND_TIME_MIN');" style="" src="/images/menu/calendar.gif"> 至&nbsp;
+        <input type="text" value="" class="BigInput" maxlength="10" size="12" name="SEND_TIME_MAX">
+        <img border="0" align="absMiddle" onclick="td_calendar('form1.SEND_TIME_MAX');" style="" src="/images/menu/calendar.gif">
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" width="100" class="TableData"> 内容：</td>
+      <td class="TableData">
+       <select class="BigSelect" name="CONTENT_RELATION">
+        <option value="1">等于</option>
+        <option value="2">大于</option>
+        <option value="3">小于</option>
+        <option value="4">大于等于</option>
+        <option value="5">小于等于</option>
+        <option value="6">不等于</option>
+        <option value="7">开始为</option>
+        <option selected="" value="8">包含</option>
+        <option value="9">结束为</option>
+       </select>
+        <input type="text" value="" class="BigInput" maxlength="200" size="33" name="CONTENT">
+      </td>
+    </tr>
+    <tr>
+      <td nowrap="" width="100" class="TableData"> 点击次数：</td>
+      <td class="TableData">
+        <input type="text" value="" class="BigInput" maxlength="10" size="4" name="CLICK_COUNT_MIN"> &nbsp;至&nbsp;
+        <input type="text" value="" class="BigInput" maxlength="10" size="4" name="CLICK_COUNT_MAX">
+      </td>
+    </tr>
+    <tr align="center" class="TableControl">
+      <td nowrap="" colspan="2">
+        <input type="submit" class="BigButtonA" value="查询" onclick="window.location.href='newsSearchResult.htm'">&nbsp;&nbsp;
+        <input type="reset" class="BigButtonA" value="重填">&nbsp;&nbsp;
+      </td>
+    </tr>
+  </tbody></table>
+
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

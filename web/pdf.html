@@ -1,0 +1,137 @@
+<html>
+	<head>
+		<title>客户端导出测试</title>
+		<script type="text/javascript">
+			var content = document.getElementById("content");
+			function getExportPath() {
+				var shell = new ActiveXObject("Shell.Application");
+				var folder = shell.BrowseForFolder(0, '请选择存储目录', 0x0040, 0x11); 
+				var filePath;
+				if(folder != null) {
+					 filePath = folder.items().item().Path;
+				}
+				return filePath;
+			}
+			function exportHtml() {
+				var filePath = getExportPath();
+				if(filePath != null) {
+					var file;
+					try {
+						var fso = new ActiveXObject("Scripting.FileSystemObject");  
+						file = fso.createtextfile(filePath + "/测试导出.html",true);// 创建文件
+						file.WriteLine(content.innerHTML);// 写入数据
+						alert("导出成功");
+					} catch (e) {
+						alert("导出失败");
+					} finally {
+						if(file != null) 
+							file.close();// 关闭连接
+					}
+				}
+			}
+			
+			function exportWord() {
+				var filePath = getExportPath();
+				if(filePath != null) {
+					try {
+						var word = new ActiveXObject("Word.Application");
+						var doc = word.Documents.Add("", 0, 1);
+						var range = doc.Range(0, 1);
+						var sel = document.body.createTextRange();
+						try {
+							sel.moveToElementText(content);
+						} catch (notE) {
+							alert("导出数据失败，没有数据可以导出。");
+							window.close();
+							return;
+						}
+						sel.select();
+						sel.execCommand("Copy");
+						range.Paste();
+						//word.Application.Visible = true;// 控制word窗口是否显示
+						doc.saveAs(filePath + "/导出测试.doc");// 保存
+						alert("导出成功");
+					} catch (e) {
+						alert("导出数据失败，需要在客户机器安装Microsoft Office Word(不限版本)，将当前站点加入信任站点，允许在IE中运行ActiveX控件。");
+					} finally {
+						try {
+							word.quit();// 关闭word窗口
+						} catch (ex) {}
+					}
+				}
+			}
+			
+			function exportPdf() {
+				//alert(1);
+				var filePath = getExportPath();
+				alert(filePath);
+				if(filePath != null) {
+					try {
+						var word = new ActiveXObject("Word.Application");
+						var doc = word.Documents.Add("", 0, 1);
+						var range = doc.Range(0, 1);
+						var sel = document.body.createTextRange();
+						try {
+							sel.moveToElementText(content);
+						} catch (notE) {
+							alert("导出数据失败，没有数据可以导出。");
+							window.close();
+							return;
+						}
+						sel.select();
+						sel.execCommand("Copy");
+						range.Paste();
+						//word.Application.Visible = true;// 控制word窗口是否显示
+						doc.saveAs(filePath + "/导出测试.pdf", 17);// 保存为pdf格式
+						alert("导出成功");
+					} catch (e) {
+						alert("导出数据失败，需要在客户机器安装Microsoft Office Word 2007以上版本，将当前站点加入信任站点，允许在IE中运行ActiveX控件。");
+					} finally {
+						try {
+							word.quit();// 关闭word窗口
+						} catch (ex) {}
+					}
+				}
+			}
+
+			function test(){
+				alert(11);
+			}
+			
+			
+			//指定页面区域内容导入Word
+			 function AllAreaWord()
+			 {
+			  var oWD = new ActiveXObject("Word.Application");
+			  var oDC = oWD.Documents.Add("",0,1);
+			  var oRange =oDC.Range(0,1);
+			  var sel = document.body.createTextRange();
+			  sel.moveToElementText(PrintA);
+			  sel.select();
+			  sel.execCommand("Copy");
+			  oRange.Paste();
+			  oWD.Application.Visible = true;
+			  //window.close();
+			 }
+		</script>
+	</head>
+	<body>
+		toolbar
+		<div>
+			<button onclick="exportHtml();">导出HTML</button>
+			<button onclick="exportWord();">导出WORD</button>
+			<button onclick="exportPdf();">导出PDF</button>
+			<a href="#" onclick="expPDF();">导出路径</a>
+		</div>
+		content
+		<div id="content" style="border: 1px #000 solid">
+			<h1>标题</h1>
+			<font color="gray">正文内容</font>
+		</div>
+	</body>
+</html>
+
+
+<SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

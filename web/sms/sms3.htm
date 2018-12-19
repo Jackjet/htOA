@@ -1,0 +1,363 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>短信息</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+<script src="../inc/mytable.js"></script>
+<link href="../css/theme/7/sms.css" type="text/css" rel="stylesheet">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',60000);
+function show_msg(SMS_ID, start)
+{
+	if($('tr'+SMS_ID).style.display=='block')
+	{
+	   $('tr'+SMS_ID).style.display='none'
+	   $('img'+SMS_ID).src="../images/collapsed.gif";
+	   return;
+	}
+	$('tr'+SMS_ID).style.display='block';
+	$('img'+SMS_ID).src="../images/expanded.gif";
+	if($('msg'+SMS_ID).innerHTML.toLowerCase().indexOf("&lt;/div&gt;")&gt;0)
+	   return;
+	
+	$('msg'+SMS_ID).innerHTML="&lt;img src='../images/loading.gif' height='20' width='20' align='absMiddle'&gt; 加载中，请稍候……";
+
+	var req=getXMLHttpObj();
+	req.open("GET","../show_msg.php?SMS_ID="+SMS_ID+"&amp;start="+start,true);
+	req.onreadystatechange=function(){if(req.readyState==4)$("msg"+SMS_ID).innerHTML=req.responseText;};
+	req.send(null);
+}
+
+function check_all()
+{
+ for (i=0;i&lt;document.all("email_select").length;i++)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").item(i).checked=true;
+   else
+      document.all("email_select").item(i).checked=false;
+ }
+
+ if(i==0)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").checked=true;
+   else
+      document.all("email_select").checked=false;
+ }
+}
+
+function check_one(el)
+{
+   if(!el.checked)
+      document.all("allbox").checked=false;
+}
+
+function delete_read(DEL_TYPE)
+{
+ msg="确认要删除所有已提醒的短信息吗？";
+ if(window.confirm(msg))
+ {
+  URL="delete_read.php?CUR_TIME=2010-08-11 08:31:08&amp;DEL_TYPE="+DEL_TYPE;
+  window.location=URL;
+ }
+}
+function delete_all(DEL_TYPE)
+{
+ if(DEL_TYPE==1)
+    msg="确认要删除所有已接收的短信息吗？";
+ else
+    msg="确认要删除所有已发送的短信息吗？";
+ if(window.confirm(msg))
+ {
+  URL="delete_all.php?CUR_TIME=2010-08-11 08:31:08&amp;DEL_TYPE="+DEL_TYPE;
+  window.location=URL;
+ }
+}
+
+function delete_mail()
+{
+  delete_str="";
+  for(i=0;i&lt;document.all("email_select").length;i++)
+  {
+
+      el=document.all("email_select").item(i);
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(i==0)
+  {
+      el=document.all("email_select");
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(delete_str=="")
+  {
+     alert("要删除短消息，请至少选择其中一条。");
+     return;
+  }
+
+  msg='确认要删除所选短消息么？';
+  if(window.confirm(msg))
+  {
+    url="delete.php?DELETE_STR="+ delete_str +"&amp;start=0";
+    location=url;
+  }
+}
+
+
+function read_all()
+{
+  delete_str="";
+  for(i=0;i&lt;document.all("email_select").length;i++)
+  {
+
+      el=document.all("email_select").item(i);
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(i==0)
+  {
+      el=document.all("email_select");
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(delete_str=="")
+  {
+     alert("要取消短消息提醒，请至少选择其中一条。");
+     return;
+  }
+
+  msg='确认要取消所选短消息么提醒？';
+  if(window.confirm(msg))
+  {
+    url="read.php?DELETE_STR="+ delete_str +"&amp;start=0";
+    location=url;
+  }
+}
+function openURL(URL,OP)
+{
+	  if(OP==1)
+	  {
+	     mytop=(screen.availHeight-500)/2-30;
+		   myleft=(screen.availWidth-780)/2;
+		   window.open(URL,"wxg","height=500,width=780,status=0,toolbar=no,menubar=yes,location=no,scrollbars=yes,top="+mytop+",left="+myleft+",resizable=yes");
+		}
+		else
+			{
+ 			if(parent.name!='main') 
+ 			  location=URL; 
+ 			else 
+ 				parent.location=URL;
+		}
+}
+</script>
+
+</head><body topmargin="5" class="bodycolor">
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img height="20" align="absmiddle" width="22" src="..../images/sms_receive.gif"><span class="big3"> 已接收的短信息</span>
+    </td>
+    <td align="center" class="small1">
+    共<span class="big4">&nbsp;1045</span>&nbsp;条短信息
+    </td>
+    <td align="right" valign="bottom" class="small1"><script>function goto_page()
+{var page_no=parseInt(document.all('page_no').value);
+var page_size=parseInt(document.all('page_size').value);
+if(isNaN(page_no)||page_no&lt;1||page_no&gt;105){alert("页数必须为1-105");
+return;
+}window.location="/general/sms/receive/index.php?page_size="+page_size+"&amp;start="+(page_no-1)*10;} function input_page_no(){if(event.keyCode==13) goto_page();if(event.keyCode&lt;47||event.keyCode&gt;57) event.returnValue=false;}</script><div class="pageArea" id="pageArea">第1/105页&nbsp;<a title="首页" class="pageFirstDisable" id="pageFirst" href="javascript:;"></a> <a title="上一页" class="pagePreviousDisable" id="pagePrevious" href="javascript:;"></a>&nbsp;<a title="下一页" id="pageNext" href="/general/sms/receive/index.php?start=10" class="pageNext"></a> <a title="末页" id="pageLast" href="/general/sms/receive/index.php?start=1040" class="pageLast"></a>每页<input type="text" style="text-align: center;" class="SmallInput" value="10" name="page_size" id="page_size" size="3">条第<input type="text" style="text-align: center;" onkeypress="input_page_no()" class="SmallInput" value="1" name="page_no" id="page_no" size="3">页  <a title="转到" class="pageGoto" id="pageGoto" href="javascript:goto_page();"></a></div></td>
+    </tr>
+</tbody></table>
+
+
+
+<table width="100%" class="TableList">
+  <tbody><tr class="TableHeader">
+      <td nowrap="" align="center">选择</td>
+      <td nowrap="" align="center">发送人</td>
+      <td nowrap="" align="center">内容</td>
+      <td nowrap="" align="center">发送时间 <img height="10" border="0" width="11" src="../images/arrow_down.gif"></td>
+      <td nowrap="" align="center">有效时间</td>
+      <td nowrap="" align="center">状态</td>
+      <td nowrap="" align="center">操作</td>
+    </tr>
+    <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12268" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:47:13</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 08:07:32 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12268"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12267" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:39:59</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:40:18 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12267"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12266" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:38:03</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:38:14 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12266"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12265" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:29:40</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:30:08 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12265"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12234" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+      	日常事务提醒：dadsfasdafsdfa</td>
+      <td align="center">2010-08-11 07:23:35</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:24:02 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12234"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/calendar/',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12264" name="email_select"></td>
+      <td nowrap="" align="center">王玉</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	王玉 已上线！</td>
+      <td align="center">2010-08-11 07:18:29</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:18:58 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12264"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12263" name="email_select"></td>
+      <td nowrap="" align="center">王玉</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	王玉 已上线！</td>
+      <td align="center">2010-08-11 07:18:24</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:18:58 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12263"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12262" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:18:19</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:18:58 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12262"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12261" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:18:17</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:18:58 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12261"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12260" name="email_select"></td>
+      <td nowrap="" align="center">徐财务</td>
+      <td>       <img height="20" width="20" alt="" src="../images/sms_type46.gif">
+      	徐财务 已上线！</td>
+      <td align="center">2010-08-11 07:17:08</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:17:57 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12260"> 转发</a>&nbsp;
+            <a href="javascript:openURL('/general/sms',0);"> 查看详情</a>&nbsp;
+            </td>
+    </tr>
+    
+<tr class="TableControl">
+<td colspan="4">&nbsp;<input type="checkbox" onclick="check_all();" id="allbox_for" name="allbox">
+    <label for="allbox_for">全选</label> &nbsp;
+    <input type="button" title="删除所选短消息" onclick="delete_mail();" class="SmallButtonA" value="删除"> &nbsp;
+    <input type="button" title="取消所选的短信息提醒" onclick="read_all();" class="SmallButtonB" value="取消提醒">&nbsp;
+</td>
+<td colspan="4">
+</td>
+</tr>
+
+</tbody></table>
+<p>
+<table cellspacing="1" cellpadding="3" border="0" bgcolor="#000000" width="100%" class="small">
+  <tbody><tr>
+      <td nowrap="" align="center" width="80" class="TableContent"><b>快捷操作：</b></td>
+      <td nowrap="" class="TableControl">&nbsp;
+
+   <img src="../images/delete.gif"> <a title="删除所有已提醒短信息" href="javascript:delete_read(1);">删除所有已提醒短信</a>&nbsp;&nbsp;
+
+   <img src="../images/delete.gif"> <a title="删除所有已接收的短信息" href="javascript:delete_all(1);">全部删除</a>&nbsp;&nbsp;
+
+   <img src="../images/delete.gif"> <a title="取消所有的短信息提醒" href="read_all.php?start=0">全部取消提醒</a>&nbsp;&nbsp;
+
+      </td>
+</tr>
+</tbody></table>
+
+</p>
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

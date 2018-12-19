@@ -1,0 +1,24 @@
+.text-overflow {
+	WIDTH: 100%
+}
+.text-overflow DIV {
+	OVERFLOW: hidden; WIDTH: 100%; WHITE-SPACE: nowrap; POSITION: relative; TEXT-OVERFLOW: ellipsis; -o-text-overflow: ellipsis; -moz-binding: url(moz-text-overflow.xml#XBLDocument)
+}
+.text-overflow DIV INS {
+	MIN-WIDTH: 41px; DISPLAY: none; RIGHT: 0px; BACKGROUND: url(text-fade.png) repeat-y; WIDTH: 1.5em; BOTTOM: 0px; FONT-FAMILY: Verdana; POSITION: absolute; TEXT-ALIGN: right; TEXT-DECORATION: none
+}
+UNKNOWN {
+	OVERFLOW: auto
+}
+UNKNOWN {
+	DISPLAY: none
+}
+UNKNOWN {
+	OVERFLOW: hidden
+}
+UNKNOWN {
+	DISPLAY: block
+}
+TABLE.text-overflow {
+	TABLE-LAYOUT: fixed
+}

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
+    <persistence-unit name="kwchina">
+        <provider>org.hibernate.ejb.HibernatePersistence</provider>
+
+        <properties>
+            <!--<property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://192.168.61.10:1433"/>-->
+            <!--<property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://192.168.61.141:1433"/>-->
+            <property name="hibernate.connection.url" value="jdbc:jtds:sqlserver://localhost:1433"/>
+            <property name="hibernate.connection.driver_class" value="net.sourceforge.jtds.jdbc.Driver"/>
+            <!--<property name="hibernate.connection.username" value="htTest"/>-->
+            <property name="hibernate.connection.username" value="htOA"/>
+            <property name="hibernate.connection.password" value="123456"/>
+            <property name="hibernate.dialect" value="org.hibernate.dialect.SQLServerDialect"/>
+            <property name="hibernate.connection.SelectMethod" value="Cursor"/>
+            <property name="hibernate.connection.autoReconnect" value="true"/>
+
+            <property name="hibernate.connection.characterEncoding" value="utf-8"/>
+            <property name="hibernate.archive.autodetection" value="class"/>
+            <property name="hibernate.show_sql" value="false"/>
+            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.hbm2ddl.auto" value="update"/>
+
+            <property name="hibernate.connection.provider_class" value="org.hibernate.connection.C3P0ConnectionProvider"/>
+            <property name="hibernate.c3p0.maxIdleTime" value="25000"/>
+            <property name="hibernate.c3p0.idleConnectionTestPeriod" value="1800"/>
+            <property name="hibernate.c3p0.maxPoolSize" value="300"/>
+
+        </properties>
+    </persistence-unit>
+</persistence>

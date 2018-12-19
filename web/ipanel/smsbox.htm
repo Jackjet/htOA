@@ -1,0 +1,126 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>短信箱</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',60000);
+parent.parent.parent.status_bar.new_sms.innerHTML="";
+function history_sms(SMS_ID)
+{
+   mytop=screen.availHeight-360;
+   myleft=0;
+   window.open("/general/sms/history_sms.php?SMS_ID="+SMS_ID,SMS_ID,"height=310,width=370,status=0,toolbar=no,menubar=no,location=no,scrollbars=no,top="+mytop+",left="+myleft+",resizable=yes");
+}
+</script>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<link href="../css/theme/7/smsbox.css" type="text/css" rel="stylesheet">
+<link href="../css/theme/7/user_online.css" type="text/css" rel="stylesheet">
+
+</head><body leftmargin="0" topmargin="0" class="bodycolor">
+<div id="body">
+<div class="module listColor">
+  <div class="head">
+    <h4 class="moduleHeader">
+       <img height="20" align="absmiddle" width="20" alt="" src="../images/sms_type46.gif">      </h4>
+  </div>
+  <div class="module_body">
+      <u style="" title="部门：财务部">徐财务</u>：徐财务 已上线！<br>
+      <i>2010-08-11 06:23:24</i><br>
+    <div align="right" class="module_page">
+      <a onclick="parent.send_sms('cw','徐财务');" href="#"> 回复</a>&nbsp;
+      <a title="转到相应的模块" href="javascript:parent.openURL('/general/sms',0);"> 链接</a>&nbsp;
+      <a href="delete.php?SMS_ID=12257"> 删除</a>
+    </div>
+  </div>
+</div>
+<div class="module listColor">
+  <div class="head">
+    <h4 class="moduleHeader">
+       <img height="20" align="absmiddle" width="20" alt="" src="../images/sms_type46.gif">      </h4>
+  </div>
+  <div class="module_body">
+      <u style="" title="部门：财务部">徐财务</u>：徐财务 已上线！<br>
+      <i>2010-08-11 06:14:00</i><br>
+    <div align="right" class="module_page">
+      <a onclick="parent.send_sms('cw','徐财务');" href="#"> 回复</a>&nbsp;
+      <a title="转到相应的模块" href="javascript:parent.openURL('/general/sms',0);"> 链接</a>&nbsp;
+      <a href="delete.php?SMS_ID=12256"> 删除</a>
+    </div>
+  </div>
+</div>
+<div class="module listColor">
+  <div class="head">
+    <h4 class="moduleHeader">
+       <img height="20" align="absmiddle" width="20" alt="" src="../images/sms_type46.gif">      </h4>
+  </div>
+  <div class="module_body">
+      <u style="" title="部门：财务部">徐财务</u>：徐财务 已上线！<br>
+      <i>2010-08-11 05:54:01</i><br>
+    <div align="right" class="module_page">
+      <a onclick="parent.send_sms('cw','徐财务');" href="#"> 回复</a>&nbsp;
+      <a title="转到相应的模块" href="javascript:parent.openURL('/general/sms',0);"> 链接</a>&nbsp;
+      <a href="delete.php?SMS_ID=12255"> 删除</a>
+    </div>
+  </div>
+</div>
+<div class="module listColor">
+  <div class="head">
+    <h4 class="moduleHeader">
+       <img height="20" align="absmiddle" width="20" alt="" src="../images/sms_type46.gif">      </h4>
+  </div>
+  <div class="module_body">
+      <u style="" title="部门：财务部">徐财务</u>：徐财务 已上线！<br>
+      <i>2010-08-11 05:48:48</i><br>
+    <div align="right" class="module_page">
+      <a onclick="parent.send_sms('cw','徐财务');" href="#"> 回复</a>&nbsp;
+      <a title="转到相应的模块" href="javascript:parent.openURL('/general/sms',0);"> 链接</a>&nbsp;
+      <a href="delete.php?SMS_ID=12254"> 删除</a>
+    </div>
+  </div>
+</div>
+<div class="module listColor">
+  <div class="head">
+    <h4 class="moduleHeader">
+       <img height="20" align="absmiddle" width="20" alt="" src="../images/sms_type46.gif">      </h4>
+  </div>
+  <div class="module_body">
+      <u style="" title="部门：技术部">王玉</u>：王玉 已上线！<br>
+      <i>2010-08-11 05:48:15</i><br>
+    <div align="right" class="module_page">
+      <a onclick="parent.send_sms('wy','王玉');" href="#"> 回复</a>&nbsp;
+      <a title="转到相应的模块" href="javascript:parent.openURL('/general/sms',0);"> 链接</a>&nbsp;
+      <a href="delete.php?SMS_ID=12253"> 删除</a>
+    </div>
+  </div>
+</div>
+<div align="center">
+    <input type="button" onclick="location='index.php?CUR_PAGE=1';" class="SmallButtonA" value="下一页">
+<br><br>
+    <input type="button" title="删除以上列出的短信" onclick="delete_all(1);" class="SmallButtonC" value="删除以上短信">
+</div>
+
+
+</div>
+<div id="bottom"></div>
+
+
+<script>
+function delete_all()
+{
+ msg="确认要删除以上列出的短信吗？";
+ if(window.confirm(msg))
+ {
+  URL="delete_all.php?SMS_ID_STR=12257,12256,12255,12254,12253,";
+  window.location=URL;
+ }
+}
+</script>
+
+<div id="livemargins_control" style="position: absolute; display: none; z-index: 9999;"><img height="5" width="77" style="position: absolute; left: -77px; top: -5px;" src="chrome://livemargins/skin/monitor-background-horizontal.png">	<img style="position: absolute; left: 0pt; top: -5px;" src="chrome://livemargins/skin/monitor-background-vertical.png">	<img style="position: absolute; left: 1px; top: 0pt; opacity: 0.5; cursor: pointer;" onmouseout="this.style.opacity=0.5" onmouseover="this.style.opacity=1" src="chrome://livemargins/skin/monitor-play-button.png" id="monitor-play-button"></div></body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

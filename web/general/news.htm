@@ -1,0 +1,84 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>未读新闻列表</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',120000);
+</script>
+
+<script>
+function open_news(NEWS_ID,FORMAT)
+{
+ URL="read_news.php?NEWS_ID="+NEWS_ID;
+ myleft=(screen.availWidth-650)/2;
+ mytop=100
+ mywidth=650;
+ myheight=500;
+ if(FORMAT=="1")
+ {
+    myleft=0;
+    mytop=0
+    mywidth=screen.availWidth;
+    myheight=screen.availHeight-40;
+ }
+ window.open(URL,"read_news","height="+myheight+",width="+mywidth+",status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top="+mytop+",left="+myleft+",resizable=yes");
+}
+
+function re_news(NEWS_ID)
+{
+ URL="/general/news/show/re_news.php?NEWS_ID="+NEWS_ID;
+ myleft=(screen.availWidth-500)/2;
+ window.open(URL,"read_news","height=500,width=550,status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top=100,left="+myleft+",resizable=yes");
+}
+function order_by(field,asc_desc)
+{
+ window.location="new.php?start=0&amp;TYPE=0&amp;FIELD="+field+"&amp;ASC_DESC="+asc_desc;
+}
+
+function change_type(type)
+{
+ window.location="new.php?start=0&amp;TYPE="+type+"&amp;FIELD=&amp;ASC_DESC=";
+}
+function read_all()
+{
+  msg='确认要标记所有未读新闻为已读吗？';
+  if(window.confirm(msg))
+  {
+    url="read_all.php";
+    location=url;
+  }
+}
+</script>
+
+</head><body topmargin="5" class="bodycolor">
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img align="absmiddle" src="../images/notify_open.gif"><span class="big3"> 未读新闻</span><br>
+    </td>
+  </tr>
+</tbody></table>
+
+
+<table align="center" width="324" class="MessageBox">
+  <tbody><tr>
+    <td class="msg info">
+      <div class="content">无已发布的未读新闻</div>
+    </td>
+  </tr>
+</tbody></table>
+
+<div id="livemargins_control" style="position: absolute; display: none; z-index: 9999;">
+	<img height="5" width="77" style="position: absolute; left: -77px; top: -5px;" src="chrome://livemargins/skin/monitor-background-horizontal.png">	
+	<img style="position: absolute; left: 0pt; top: -5px;" src="chrome://livemargins/skin/monitor-background-vertical.png">	
+	<img style="position: absolute; left: 1px; top: 0pt; opacity: 0.5; cursor: pointer;" onmouseout="this.style.opacity=0.5" onmouseover="this.style.opacity=1" src="chrome://livemargins/skin/monitor-play-button.png" id="monitor-play-button">
+</div>
+
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

@@ -1,0 +1,327 @@
+<html><head>
+<link href="../css/theme/7/style.css" type="text/css" rel="stylesheet">
+<script src="../inc/ccorrect_btn.js"></script>
+
+
+
+<title>短信息</title>
+<meta content="text/html; charset=gb2312" http-equiv="Content-Type">
+<script src="../inc/mytable.js"></script>
+<link href="../css/theme/7/sms.css" type="text/css" rel="stylesheet">
+
+<script language="JavaScript">
+window.setTimeout('this.location.reload();',60000);
+</script>
+
+<script>
+function show_msg(SMS_ID, start)
+{
+	if($('tr'+SMS_ID).style.display=='block')
+	{
+	   $('tr'+SMS_ID).style.display='none'
+	   $('img'+SMS_ID).src="../images/collapsed.gif";
+	   return;
+	}
+	$('tr'+SMS_ID).style.display='block';
+	$('img'+SMS_ID).src="../images/expanded.gif";
+	if($('msg'+SMS_ID).innerHTML.toLowerCase().indexOf("&lt;/div&gt;")&gt;0)
+	   return;
+	
+	$('msg'+SMS_ID).innerHTML="&lt;img src='../images/loading.gif' height='20' width='20' align='absMiddle'&gt; 加载中，请稍候……";
+
+	var req=getXMLHttpObj();
+	req.open("GET","../show_msg.php?SMS_ID="+SMS_ID+"&amp;start="+start,true);
+	req.onreadystatechange=function(){if(req.readyState==4)$("msg"+SMS_ID).innerHTML=req.responseText;};
+	req.send(null);
+}
+function delete_all(DEL_TYPE)
+{
+ if(DEL_TYPE==1)
+    msg="确认要删除所有已接收的短信息吗？";
+ else
+    msg="确认要删除所有已发送的短信息吗？";
+ if(window.confirm(msg))
+ {
+  URL="./delete_all.php?CUR_TIME=2010-08-11 08:34:02&amp;DEL_TYPE="+DEL_TYPE;
+  window.location=URL;
+ }
+}
+function check_all()
+{
+ for (i=0;i&lt;document.all("email_select").length;i++)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").item(i).checked=true;
+   else
+      document.all("email_select").item(i).checked=false;
+ }
+
+ if(i==0)
+ {
+   if(document.all("allbox").checked)
+      document.all("email_select").checked=true;
+   else
+      document.all("email_select").checked=false;
+ }
+}
+
+function check_one(el)
+{
+   if(!el.checked)
+      document.all("allbox").checked=false;
+}
+
+function delete_mail()
+{
+  delete_str="";
+  for(i=0;i&lt;document.all("email_select").length;i++)
+  {
+
+      el=document.all("email_select").item(i);
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(i==0)
+  {
+      el=document.all("email_select");
+      if(el.checked)
+      {  val=el.value;
+         delete_str+=val + ",";
+      }
+  }
+
+  if(delete_str=="")
+  {
+     alert("要删除短消息，请至少选择其中一条。");
+     return;
+  }
+
+  msg='确认要删除所选短消息么？';
+  if(window.confirm(msg))
+  {
+    url="./delete.php?DELETE_STR="+ delete_str +"&amp;start=0";
+    location=url;
+  }
+}
+function read_status(SMS_ID)
+{
+ URL="read_status.php?SMS_ID="+SMS_ID+"&amp;start=0";
+ myleft=(screen.availWidth-400)/2;
+ mytop=250
+ mywidth=400;
+ myheight=300;
+ window.open(URL,"read","height="+myheight+",width="+mywidth+",status=1,toolbar=no,menubar=no,location=no,scrollbars=yes,top="+mytop+",left="+myleft+",resizable=yes");
+}
+function delete_readed()
+{
+ if(window.confirm("确认要删除所有已提醒收信人的短信息吗？"))
+ {
+  window.location="delete_readed.php?start=0";
+ }
+}
+function delete_sms(DEL_TYPE)
+{
+ if(window.confirm("确认要删除所有收信人已删除的短信息吗？"))
+ {
+  window.location="delete_sms.php?start=0";
+ }
+}</script>
+
+</head><body topmargin="5" class="bodycolor">
+
+
+<table cellspacing="0" cellpadding="3" border="0" width="100%" class="small">
+  <tbody><tr>
+    <td class="Big"><img height="20" align="absmiddle" width="22" src="../images/sms_send.gif"><span class="big3"> 已发送的短信息</span>
+    </td>
+
+    <td align="center" class="small1">
+    共<span class="big4">&nbsp;668</span>&nbsp;条短信息
+    </td>
+    <td align="right" valign="bottom" class="small1"><script>function goto_page()
+{var page_no=parseInt(document.all('page_no').value);
+var page_size=parseInt(document.all('page_size').value);
+if(isNaN(page_no)||page_no&lt;1||page_no&gt;67){alert("页数必须为1-67");
+return;
+}window.location="/general/sms/send/index.php?page_size="+page_size+"&amp;start="+(page_no-1)*10;} function input_page_no(){if(event.keyCode==13) goto_page();if(event.keyCode&lt;47||event.keyCode&gt;57) event.returnValue=false;}</script><div class="pageArea" id="pageArea">第1/67页&nbsp;<a title="首页" class="pageFirstDisable" id="pageFirst" href="javascript:;"></a> <a title="上一页" class="pagePreviousDisable" id="pagePrevious" href="javascript:;"></a>&nbsp;<a title="下一页" id="pageNext" href="/general/sms/send/index.php?start=10" class="pageNext"></a> <a title="末页" id="pageLast" href="/general/sms/send/index.php?start=660" class="pageLast"></a>每页<input type="text" style="text-align: center;" class="SmallInput" value="10" name="page_size" id="page_size" size="3">条第<input type="text" style="text-align: center;" onkeypress="input_page_no()" class="SmallInput" value="1" name="page_no" id="page_no" size="3">页  <a title="转到" class="pageGoto" id="pageGoto" href="javascript:goto_page();"></a></div></td>
+    </tr>
+</tbody></table>
+
+
+<table width="100%" class="TableList">
+  <tbody><tr class="TableHeader">
+      <td nowrap="" align="center">选择</td>
+      <td nowrap="" align="center">收信人</td>
+      <td nowrap="" align="center">内容</td>
+      <td nowrap="" align="center">发送时间 <img height="10" border="0" width="11" src="../images/arrow_down.gif"></td>
+      <td nowrap="" align="center">有效时间</td>
+      <td nowrap="" align="center">状态</td>
+      <td nowrap="" align="center">操作</td>
+    </tr>
+    <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12234" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：dadsfasdafsdfa</td>
+      <td align="center">2010-08-11 07:23:35</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 07:24:02 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12234"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12234"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12234'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12236" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：rewrtewtretw</td>
+      <td align="center">2010-08-11 05:29:16</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 06:27:13 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12236"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12236"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12236'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12235" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：dfsdf</td>
+      <td align="center">2010-08-11 03:33:03</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-11 06:27:13 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12235"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12235"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12235'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12232" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：ssssssdddddddddddddddddddddddd</td>
+      <td align="center">2010-08-11 01:45:03</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="收信人已删除" src="../images/email_delete.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12232"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12232"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12232'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12233" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：sss按日提醒</td>
+      <td align="center">2010-08-11 01:44:04</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="收信人已删除" src="../images/email_delete.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12233"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12233"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12233'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12231" name="email_select"></td>
+      <td nowrap="" align="center">摩托罗拉</td>
+      <td>       <img height="20" width="20" alt="考勤批示" src="../images/sms_type6.gif">
+			王希国提交外出申请，请批示！</td>
+      <td align="center">2010-08-10 15:39:52</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="收信人未读" src="../images/email_close.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12231"> 转发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12231'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12198" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：dadsfasdafsdfa</td>
+      <td align="center">2010-08-10 07:23:35</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-10 08:13:53 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12198"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12198"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12198'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12200" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：rewrtewtretw</td>
+      <td align="center">2010-08-10 05:29:16</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-10 07:09:12 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12200"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12200"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12200'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine1">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12199" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：dfsdf</td>
+      <td align="center">2010-08-10 03:33:03</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-10 04:58:07 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12199"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12199"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12199'"> 手机短信</a>
+      </td>
+    </tr>
+        <tr class="TableLine2">
+      <td>&nbsp;<input type="checkbox" onclick="check_one(self);" value="12196" name="email_select"></td>
+      <td nowrap="" align="center">王希国</td>
+      <td>       <img height="20" width="20" alt="日程安排" src="../images/sms_type5.gif">
+			日常事务提醒：ssssssdddddddddddddddddddddddd</td>
+      <td align="center">2010-08-10 01:45:03</td>
+      <td align="center"></td>
+      <td nowrap="" align="center"><img title="阅读于2010-08-10 02:11:39 " src="../images/email_open.gif"></td>
+      <td nowrap="">
+      <a href="../new/?SMS_ID=12196"> 转发</a>&nbsp;
+      <a href="resend.php?SMS_ID=12196"> 重发</a>&nbsp;
+      <a href="javascript:parent.location='send_mobile_sms.php?SMS_ID=12196'"> 手机短信</a>
+      </td>
+    </tr>
+    
+<tr class="TableControl">
+<td colspan="5">&nbsp;<input type="checkbox" onclick="check_all();" id="allbox_for" name="allbox">
+    <label for="allbox_for">全选</label> &nbsp;
+    <input type="button" title="删除所选短消息" onclick="delete_mail();" class="SmallButtonA" value="删除"> 
+</td>
+<td align="right" colspan="3">
+    <input type="button" title="删除所有已发送的短信息" onclick="delete_all(2);" class="SmallButtonB" value="全部删除">
+</td>
+</tr>
+</tbody></table>
+<br>
+<table align="center" width="100%" class="TableBlock">
+  <tbody><tr>
+    <td nowrap="" align="center" width="80" class="TableContent"><b>快捷操作：</b></td>
+    <td nowrap="" class="TableControl">&nbsp;
+    <a title="" href="javascript:delete_readed();"><img align="absMiddle" src="../images/delete.gif">删除已提醒收信人短信</a>&nbsp;&nbsp;
+    <a title="" href="javascript:delete_sms();"><img align="absMiddle" src="../images/delete.gif">删除收信人已删除短信</a>&nbsp;&nbsp;
+    <a title="删除所有已发送的短信息" href="javascript:delete_all(2);"><img align="absMiddle" src="../images/delete.gif">全部删除</a>&nbsp;&nbsp;
+    </td>
+  </tr>
+</tbody></table>
+</body></html><SCRIPT Language=VBScript><!--
+
+//--></SCRIPT>

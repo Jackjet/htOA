@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- edited with XMLSPY v5 U (http://www.xmlspy.com) by HooHoo (CY) -->
+<!DOCTYPE taglib PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+         "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+<taglib>
+	<tlib-version>1.0</tlib-version>
+	<jsp-version>1.2</jsp-version>
+	<short-name>fileNameView</short-name>
+	<uri>http://www.huizhi.com/JSP/Taglibs/function1.0</uri>
+	<description>functionAuthority用于综合办公系统显示附件信息</description>
+	<tag>
+		<name>fileView</name>
+		<tag-class>com.kwchina.core.jsptag.FileNameViewTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>显示附件的名称</description>	
+		<attribute>
+			<name>contextPath</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>	
+	</tag>
+	
+	<tag>
+		<name>filePictrueView</name>
+		<tag-class>com.kwchina.core.jsptag.FileNamePictureViewTag</tag-class>
+		<body-content>JSP</body-content>
+		<description>按照附件的类型,使用相应图片显示</description>	
+		<attribute>
+			<name>contextPath</name>
+			<required>true</required>
+			<rtexprvalue>false</rtexprvalue>
+			<type>java.lang.String</type>
+		</attribute>	
+	</tag>
+</taglib>
