@@ -84,7 +84,7 @@
             width: "90%",
             autowidth: true,
             height: document.documentElement.clientHeight - 140,
-            colNames: ['Id', '招投标题', '申请人', '申请部门', '申请时间', '招标编号', '招投状态'],
+            colNames: ['Id', '招投标题', '申请人', '申请部门', '开标时间', '招标编号', '招投状态'],
             colModel: [
                 {name: 'bidInfoId', index: 'bidInfoId', width: 0, align: 'center', hidden: true},
                 {name: 'projectName', index: 'projectName', width: 100, align: 'center', formatter: formatTitle},

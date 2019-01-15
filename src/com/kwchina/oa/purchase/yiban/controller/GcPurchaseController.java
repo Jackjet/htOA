@@ -479,6 +479,19 @@ public class GcPurchaseController extends PurchaseBaseController {
 
 //						obj.put("charger", null);
 //					}
+				String purchaseWay = "";
+				if(fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() < 5){
+					purchaseWay = "";
+				}else if (fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() > 4)	{
+					purchaseWay = "直接采购";
+				}else if (fi.getPurchaseWay() == 1)	{
+					purchaseWay = "三方比价";
+				}else if (fi.getPurchaseWay() == 2)	{
+					purchaseWay = "招投标";
+				}else if (fi.getPurchaseWay() == 3)	{
+					purchaseWay = "合同变更";
+				}
+				obj.put("purchaseWay", purchaseWay);
 				String status = "采购结束";
 				if (fi.getPurchaseStatus() == 0) {
 					status = "部门领导审核中";

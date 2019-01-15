@@ -9,10 +9,8 @@ import com.kwchina.core.base.service.RoleManager;
 import com.kwchina.oa.purchase.sanfang.service.SupplierInforManager;
 import com.kwchina.oa.purchase.yiban.dao.PurchaseCheckDAO;
 import com.kwchina.oa.purchase.yiban.dao.PurchasePackageDao;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseCheckInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseLayerInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchasePackage;
+import com.kwchina.oa.purchase.yiban.entity.*;
+import com.kwchina.oa.purchase.yiban.service.PriceBankManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseCheckInforManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseLayerInforManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseManager;
@@ -42,7 +40,8 @@ public class LxPurchaseCheckInforController extends PurchaseBaseController {
 
 	@Resource
 	private PurchaseCheckInforManager purchaseCheckInforManager;
-
+	@Autowired
+	private PriceBankManager priceBankManager;
 	@Autowired
 	private PurchaseLayerInforManager purchaseLayerInforManager;
 	@Autowired
@@ -585,6 +584,14 @@ public class LxPurchaseCheckInforController extends PurchaseBaseController {
 					String purchaseFinalMoney = vo.getPurchaseFinalMoney();
 					if (purchaseFinalMoney != null){
 						purchase.setPurchaseFinalMoney(purchaseFinalMoney);
+						PriceBank priceBank = new PriceBank();
+						priceBank.setPurchaseFinalMoney(purchaseFinalMoney);
+						priceBank.setPurchaseGoods(purchase.getPurchaseTitle());
+						priceBank.setPurchaseId(purchaseId);
+						priceBank.setGuikou(purchase.getGuikouDepartment().getOrganizeName());
+						priceBank.setTime(new Timestamp(System.currentTimeMillis()));
+						priceBank.setType(purchase.getFlowId().getFlowId()+"");
+						this.priceBankManager.save(priceBank);
 					}
 					this.purchaseManager.save(purchase);
 					purchaseId =purchase.getPurchaseId();
@@ -794,7 +801,9 @@ public class LxPurchaseCheckInforController extends PurchaseBaseController {
 				purchase.setPurchaseStatus(pstatus);
 				String purchaseMoney = vo.getPurchaseMoney();
 				if (purchaseMoney != null){
-					purchase.setPurchaseMoney(purchaseMoney);
+					purchaseMoney = vo.getPurchaseMoney();
+					int money =Integer.parseInt(purchaseMoney) * purchase.getPurchaseNumber();
+					purchase.setPurchaseMoney(money+"");
 				}
 				this.purchaseManager.save(purchase);
 				purchaseId = purchase.getPurchaseId();

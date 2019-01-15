@@ -1,11 +1,16 @@
 package com.kwchina.oa.purchase.sanfang.service.impl;
 
+import com.kwchina.core.base.entity.OrganizeInfor;
 import com.kwchina.core.common.service.BasicManagerImpl;
 import com.kwchina.core.util.DateHelper;
 import com.kwchina.core.util.string.StringUtil;
+import com.kwchina.oa.purchase.sanfang.VO.BackgroundVO;
+import com.kwchina.oa.purchase.sanfang.VO.QualificationVO;
 import com.kwchina.oa.purchase.sanfang.VO.SupplierCheckVO;
 import com.kwchina.oa.purchase.sanfang.VO.SupplierVO;
 import com.kwchina.oa.purchase.sanfang.dao.SupplierInforDAO;
+import com.kwchina.oa.purchase.sanfang.entity.BackGround;
+import com.kwchina.oa.purchase.sanfang.entity.Qualification;
 import com.kwchina.oa.purchase.sanfang.entity.SupplierCheckInfor;
 import com.kwchina.oa.purchase.sanfang.entity.SupplierInfor;
 import com.kwchina.oa.purchase.sanfang.enums.PurchaseTypeEnum;
@@ -13,13 +18,17 @@ import com.kwchina.oa.purchase.sanfang.enums.SupplierStatusEnum;
 import com.kwchina.oa.purchase.sanfang.service.SupplierInforManager;
 import com.kwchina.oa.purchase.sanfang.utils.Convert;
 import com.kwchina.oa.purchase.sanfang.utils.EnumUtil;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springmodules.validation.bean.conf.loader.annotation.handler.Max;
 
+import javax.swing.text.html.HTMLDocument;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class SupplierInforManagerImpl extends BasicManagerImpl<SupplierInfor> implements SupplierInforManager {
@@ -39,12 +48,28 @@ public class SupplierInforManagerImpl extends BasicManagerImpl<SupplierInfor> im
         List<SupplierInfor> result = getResultByQueryString(hql);
         return result;
     }
-    @Override
-    public List<SupplierInfor> getInSupplier(Integer purchaseType ) {
 
-        String hql = "from SupplierInfor where valid=1 and status>0 and purchaseType="+purchaseType;
+    @Override
+    public List<SupplierInfor> getInSupplier(Integer purchaseType,Integer deptId) {
+
+        String hql = "from SupplierInfor where valid=1 and status>0 and purchaseType=" + purchaseType;
         List<SupplierInfor> result = getResultByQueryString(hql);
-        return result;
+        if(deptId!=null&&deptId!=0){
+            List<SupplierInfor> result1 = new ArrayList<>();
+            for(SupplierInfor supplierInfor:result){
+                Set<OrganizeInfor> organizes = supplierInfor.getOrganizes();
+                for(OrganizeInfor organizeInfor:organizes){
+                    System.out.println(organizeInfor.getOrganizeId().intValue());
+                    if(deptId.intValue()==organizeInfor.getOrganizeId().intValue()){
+                        result1.add(supplierInfor);
+                        break;
+                    }
+                }
+            }
+            return result1;
+        }else{
+            return result;
+        }
     }
 
     @Override
@@ -64,19 +89,25 @@ public class SupplierInforManagerImpl extends BasicManagerImpl<SupplierInfor> im
         }
     }
 
+    @Override
     public SupplierVO transPOToVO(SupplierInfor supplierInfor) {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         SupplierVO supplierVO = new SupplierVO();
+        BeanUtils.copyProperties(supplierInfor,supplierVO);
+        supplierVO.setSupplierTel(supplierInfor.getContactName()+"/"+supplierInfor.getSupplierContact());
         if (supplierInfor.getExpiration() != null) {
             supplierVO.setExpirationTime(sdf.format(supplierInfor.getExpiration()));
         }
         supplierVO.setPurchaseTypeMsg(EnumUtil.getByCode(supplierInfor.getPurchaseType(), PurchaseTypeEnum.class).getMsg());
-        supplierVO.setServiceDetail(supplierInfor.getServiceDetail());
-        supplierVO.setServiceYear(supplierInfor.getServiceYear());
-        if (supplierInfor.isSingleSupplier()) {
-            supplierVO.setSingle("是");
+        if (supplierInfor.isPassISO()) {
+            supplierVO.setPass("是");
         } else {
-            supplierVO.setSingle("否");
+            supplierVO.setPass("否");
+        }
+        if(supplierInfor.isSingle()){
+            supplierVO.setSingleOne("是");
+        }else {
+            supplierVO.setSingleOne("否");
         }
         if (supplierInfor.getStatus() != null) {
             supplierVO.setSupplierStatus(EnumUtil.getByCode(supplierInfor.getStatus(), SupplierStatusEnum.class).getMsg());
@@ -92,7 +123,7 @@ public class SupplierInforManagerImpl extends BasicManagerImpl<SupplierInfor> im
         List<SupplierCheckVO> checkVOS = new ArrayList<>();
         SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         for (SupplierCheckInfor checkInfor : checkInfors) {
-            if(checkInfor.isLastOne()){
+            if (checkInfor.isLastOne()) {
                 SupplierCheckVO checkVO = new SupplierCheckVO();
                 checkVO.setSupplierID(supplierInfor.getSupplierID());
                 if (checkInfor.getCheckTime() != null) {
@@ -109,18 +140,45 @@ public class SupplierInforManagerImpl extends BasicManagerImpl<SupplierInfor> im
             }
         }
         supplierVO.setCheckVOS(checkVOS);
-        supplierVO.setSupplierAddress(supplierInfor.getSupplierAddress());
-        supplierVO.setSupplierContact(supplierInfor.getSupplierContact());
-        supplierVO.setSupplierID(supplierInfor.getSupplierID());
-        supplierVO.setSupplierName(supplierInfor.getSupplierName());
+        List<Qualification> qualifications = supplierInfor.getQualifications();
+        List<QualificationVO> qualificationVOS = new ArrayList<>();
+        for (Qualification qualification : qualifications) {
+            QualificationVO qualificationVO = new QualificationVO();
+            BeanUtils.copyProperties(qualification, qualificationVO);
+            if(StringUtil.isNotEmpty(qualification.getQualificationAttach())){
+                qualificationVO.setAttach(qualification.getQualificationAttach());
+            }
+            qualificationVO.setSupplierID(qualification.getSupplierInfor().getSupplierID());
+            qualificationVOS.add(qualificationVO);
+        }
+        supplierVO.setQualificationVOS(qualificationVOS);
+        List<BackGround> backGrounds = supplierInfor.getBackGrounds();
+        List<BackgroundVO> backgroundVOS= new ArrayList<>();
+        for (BackGround backGround : backGrounds) {
+            BackgroundVO backgroundVO = new BackgroundVO();
+            BeanUtils.copyProperties(backGround, backgroundVO);
+            backgroundVO.setSupplierID(backGround.getSupplierInfor().getSupplierID());
+            backgroundVOS.add(backgroundVO);
+        }
+        supplierVO.setBackgroundVOS(backgroundVOS);
+        Iterator<OrganizeInfor> iterator = supplierInfor.getOrganizes().iterator();
+        List<String> names=new ArrayList<>();
+        List<Integer> organizeIDs=new ArrayList<>();
+        while (iterator.hasNext()){
+            OrganizeInfor next = iterator.next();
+            names.add(next.getOrganizeName());
+            organizeIDs.add(next.getOrganizeId());
+        }
+        supplierVO.setOrganizeIDs(organizeIDs);
+        supplierVO.setOrganizeNames(names);
         return supplierVO;
     }
 
     @Override
     public boolean validName(String supplierName) {
         List<SupplierInfor> allSupplier = getAllSupplier();
-        for(SupplierInfor supplierInfor:allSupplier){
-            if (supplierInfor.getSupplierName().equals(supplierName)){
+        for (SupplierInfor supplierInfor : allSupplier) {
+            if (supplierInfor.getSupplierName().equals(supplierName)) {
                 return false;
             }
         }

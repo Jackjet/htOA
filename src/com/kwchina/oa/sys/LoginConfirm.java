@@ -2,11 +2,7 @@ package com.kwchina.oa.sys;
 
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.annotation.Resource;
 import javax.mail.Folder;
@@ -20,6 +16,9 @@ import javax.xml.rpc.ServiceException;
 
 import com.kwchina.core.base.entity.*;
 import com.kwchina.core.base.service.*;
+import com.kwchina.oa.purchase.sanfang.entity.SupplierInfor;
+import com.kwchina.oa.purchase.sanfang.enums.SupplierStatusEnum;
+import com.kwchina.oa.purchase.sanfang.service.SupplierInforManager;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
@@ -60,6 +59,9 @@ public class LoginConfirm extends DispatchAction {
 	private PersonInforManager personInforManager;
 
 	@Resource
+	private SupplierInforManager supplierInforManager;
+
+	@Resource
 	private InforCategoryManager inforCategoryManager;
 
 	@Resource
@@ -88,6 +90,9 @@ public class LoginConfirm extends DispatchAction {
 
 	@Resource
 	private PersonModulesManager personModulesManager;
+
+	@Resource
+	private OrganizeManager organizeManager;
 	@RequestMapping("/login.do")
 	public String login(HttpServletRequest request, HttpServletResponse response, Model model) throws Exception {
 		HttpSession session = request.getSession();
@@ -140,9 +145,6 @@ public class LoginConfirm extends DispatchAction {
 					role.setUsers(userSet);
 					roleManager.save(role);
 				}
-
-
-
 
 				request.getSession().setAttribute("_SYSTEM_USER", systemUser);
 				PersonInfor person = (PersonInfor)this.personInforManager.get(systemUser.getPersonId());
@@ -755,6 +757,35 @@ public class LoginConfirm extends DispatchAction {
 
 				loginLog.setSucTag(1);
 				this.loginLogManager.save(loginLog);
+
+				//供应商过期提醒
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+				Date date = new Date();
+				String format1=dateFormat.format(date);
+				Calendar calendar = Calendar.getInstance();
+				calendar.setTime(date);
+				calendar.set(Calendar.MONTH, calendar.get(Calendar.MONTH) + 1);
+				String format = dateFormat.format(calendar.getTime());
+
+				String hql="from SupplierInfor supplier where valid=1 and status=4 and expiration <= '" + format + "'";
+				String hq2="from SupplierInfor supplier where valid=1 and status=5 and expiration <= '" + format1 + "'";
+				String hq3="from SupplierInfor supplier where valid=1 and status=5 and expiration > '" + format + "'";
+				List<SupplierInfor> suppliers = this.supplierInforManager.getResultByQueryString(hql);
+				List<SupplierInfor> suppliers1 = this.supplierInforManager.getResultByQueryString(hq2);
+				List<SupplierInfor> suppliers2 = this.supplierInforManager.getResultByQueryString(hq3);
+				for(SupplierInfor supplierInfor:suppliers){
+					supplierInfor.setStatus(SupplierStatusEnum.EXPIRED_SOON.getCode());
+					this.supplierInforManager.save(supplierInfor);
+				}
+				for(SupplierInfor supplierInfor:suppliers1){
+					supplierInfor.setStatus(SupplierStatusEnum.POTENTIAL.getCode());
+					supplierInfor.setExpiration(null);
+					this.supplierInforManager.save(supplierInfor);
+				}
+				for(SupplierInfor supplierInfor:suppliers2){
+					supplierInfor.setStatus(SupplierStatusEnum.QUALIFIED.getCode());
+					this.supplierInforManager.save(supplierInfor);
+				}
 
 				//会议个数
 				int meetingCount = 0;

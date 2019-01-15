@@ -21,6 +21,22 @@
             $(this).val($(this).val().replace(/[^0-9.]/g,''));
         }).css("ime-mode", "disabled"); //CSS设置输入法不可用
     });
+    function outPrice(name){
+        var tel="";
+        $.ajax({
+            type : 'POST',
+            url : "${pageContext.request.contextPath}/bid.do?method=outPrice",
+            //需要页面传入值
+            data :{supplierName:name,bidInfoId:$("#bidInfoId").val()},
+            dataType : "JSON",
+            success : function(data) {
+                $("#finalPrice").val(data);
+            },
+            error:function (data) {
+
+            }
+        });
+    }
 </script>
 
 <style>
@@ -70,22 +86,22 @@
             <td style="width: 70%">
                 <table>
                     <tr>
-                        <td>投标单位</td>
-                        <td>管理费率</td>
-                        <td>施工费率</td>
-                        <td>单位资质</td>
-                        <td>维修响应时间</td>
-                        <td>质保期</td>
-                        <td>附件</td>
+                        <td style="width: 5%">投标单位</td>
+                        <td style="width: 5%">投标单价(元)</td>
+                        <td style="width: 5%">投标总价(元)</td>
+                        <td style="width: 5%">单位资质</td>
+                        <td style="width: 5%">交货周期</td>
+                        <td style="width: 5%">备注</td>
+                        <td style="width: 5%">附件</td>
                     </tr>
                     <c:forEach var="item" items="${bidInfo.suppliers}">
                         <tr>
                             <td style="border: none">${item.supplierName}</td>
-                            <td style="border: none">${item.managerRate}</td>
-                            <td style="border: none">${item.constructRate}</td>
+                            <td style="border: none">${item.unitPrice}</td>
+                            <td style="border: none">${item.totalPrice}</td>
                             <td style="border: none">${item.qualification}</td>
                             <td style="border: none">${item.responseTime}</td>
-                            <td style="border: none">${item.shelflife}</td>
+                            <td style="border: none">${item.memo}</td>
                             <td style="border: none"><c:forEach var="file" items="${item.attach}" varStatus="status"><a
                                     style="text-decoration:underline"
                                     href="<c:url value="${'/common/'}"/>download.jsp?filepath=${file}"><span
@@ -131,25 +147,25 @@
                 <tr>
                     <td>招投价格</td>
                     <c:forEach var="total" varStatus="a" items="${bidInfo.totals}">
-                        <td><input class="price" name="price${a.count}" value="${total.price}"/></td>
+                        <td><input  name="price${a.count}" value="${total.price}" readonly/></td>
                     </c:forEach>
                 </tr>
                 <tr>
                     <td>技术平均分</td>
                     <c:forEach var="total" varStatus="b" items="${bidInfo.totals}">
-                        <td><input class="price" name="jsAvgScore${b.count}" value="${total.jsAvgScore}"/></td>
+                        <td><input name="jsAvgScore${b.count}" value="${total.jsAvgScore}" readonly/></td>
                     </c:forEach>
                 </tr>
                 <tr>
                     <td>商务平均分</td>
                     <c:forEach var="total" varStatus="c" items="${bidInfo.totals}">
-                        <td><input class="price" name="swAvgScore${c.count}" value="${total.swAvgScore}"/></td>
+                        <td><input name="swAvgScore${c.count}" value="${total.swAvgScore}" readonly/></td>
                     </c:forEach>
                 </tr>
                 <tr>
                     <td>总分</td>
                     <c:forEach var="total" varStatus="d" items="${bidInfo.totals}">
-                        <td><input class="price" name="totalScore${d.count}" value="${total.totalScore}"/></td>
+                        <td><input name="totalScore${d.count}" value="${total.totalScore}" readonly/></td>
                     </c:forEach>
                 </tr>
             </table>
@@ -159,13 +175,13 @@
             <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
                 <td class="ui-state-default jqgrid-rownum" style="width: 20%">定标结论:</td>
                 <td class="ui-state-default jqgrid-rownum">
-                    推荐供应商： <select name="zhaotouFinalSupplierName" onchange="checkSel(${bidInfo.zhaotouFinalSupplierInfor.supplierName})">
+                    推荐供应商： <select name="zhaotouFinalSupplierName" onchange="outPrice(this.value)">
                     <option value="">--请选择--</option>
                     <c:forEach var="supplier" items="${bidInfo.suppliers}">
                         <option value="${supplier.supplierName}">${supplier.supplierName}</option>
                     </c:forEach>
                 </select>
-                    &nbsp;&nbsp;&nbsp;价格： <input class="price" name="zhaotouFinalMoney" type="text" id="finalPrice" value="${bidInfo.zhaotouFinalMoney}"><br/>
+                    &nbsp;&nbsp;&nbsp;价格： <input class="price" name="zhaotouFinalMoney" type="text" id="finalPrice"><br/>
                     <textarea name="zhaotouConclusion" cols="100">${bidInfo.zhaotouConclusion}</textarea>
                 </td>
             </tr>

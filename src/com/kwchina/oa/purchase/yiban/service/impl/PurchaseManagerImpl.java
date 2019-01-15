@@ -462,7 +462,7 @@ public class PurchaseManagerImpl extends BasicManagerImpl<PurchaseInfor> impleme
 		String hql = "from PurchaseNode node where flowId ="+ flowId +" order by layer";
 		PurchaseNode node = (PurchaseNode)this.purchaseLayerInforManager.getResultByQueryString(hql).get(0);
 		String nodeName = node.getNodeName();
-		Timestamp current = new java.sql.Timestamp(System.currentTimeMillis());
+		Timestamp current = new Timestamp(System.currentTimeMillis());
 		int currentLayer = 1;
 		int status = 1;
 		PurchaseLayerInfor purchaseLayerInfor =new PurchaseLayerInfor();

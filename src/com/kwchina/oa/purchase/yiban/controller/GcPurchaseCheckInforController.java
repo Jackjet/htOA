@@ -9,10 +9,8 @@ import com.kwchina.core.base.service.RoleManager;
 import com.kwchina.oa.purchase.sanfang.service.SupplierInforManager;
 import com.kwchina.oa.purchase.yiban.dao.PurchaseCheckDAO;
 import com.kwchina.oa.purchase.yiban.dao.PurchasePackageDao;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseCheckInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchaseLayerInfor;
-import com.kwchina.oa.purchase.yiban.entity.PurchasePackage;
+import com.kwchina.oa.purchase.yiban.entity.*;
+import com.kwchina.oa.purchase.yiban.service.PriceBankManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseCheckInforManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseLayerInforManager;
 import com.kwchina.oa.purchase.yiban.service.PurchaseManager;
@@ -56,7 +54,8 @@ public class GcPurchaseCheckInforController extends PurchaseBaseController {
 
 	@Autowired
 	private RoleManager roleManager;
-
+	@Autowired
+	private PriceBankManager priceBankManager;
 	@Resource
 	private ApproveSentenceManager approveSentenceManager;
 	@Resource
@@ -596,6 +595,14 @@ public class GcPurchaseCheckInforController extends PurchaseBaseController {
 					String purchaseFinalMoney = vo.getPurchaseFinalMoney();
 					if (purchaseFinalMoney != null){
 						purchase.setPurchaseFinalMoney(purchaseFinalMoney);
+						PriceBank priceBank = new PriceBank();
+						priceBank.setPurchaseFinalMoney(purchaseFinalMoney);
+						priceBank.setPurchaseGoods(purchase.getPurchaseTitle());
+						priceBank.setPurchaseId(purchaseId);
+						priceBank.setGuikou(purchase.getGuikouDepartment().getOrganizeName());
+						priceBank.setTime(new Timestamp(System.currentTimeMillis()));
+						priceBank.setType(purchase.getFlowId().getFlowId()+"");
+						this.priceBankManager.save(priceBank);
 					}
 					this.purchaseManager.save(purchase);
 					purchaseId =purchase.getPurchaseId();

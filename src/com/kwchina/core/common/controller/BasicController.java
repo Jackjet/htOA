@@ -143,7 +143,7 @@ public class BasicController {
 		
 		if (!attachment.equals(""))
 			attachment = attachment.substring(0, attachment.length()-1);
-		
+
 		return attachment;		
 	}
 	
@@ -246,17 +246,20 @@ public class BasicController {
 	public String[] getSearchParams(HttpServletRequest request) {
 		
 		String[] params = new String[4];
-		
-		String sidx = request.getParameter("sidx");		 //查询排序的条件
-		String sord = request.getParameter("sord");		 //查询排序的方式:asc,desc
-		String _search = request.getParameter("_search");//表示是否是查询:true,false
-		String filters = request.getParameter("filters");//从页面取得的多条件查询数据
-		
+		//查询排序的条件
+		String sidx = request.getParameter("sidx");
+		//查询排序的方式:asc,desc
+		String sord = request.getParameter("sord");
+		//表示是否是查询:true,false
+		String _search = request.getParameter("_search");
+		//从页面取得的多条件查询数据
+		String filters = request.getParameter("filters");
+
 		params[0] = sidx;
 		params[1] = sord;
 		params[2] = _search;
 		params[3] = filters;
-		
+
 		return params;
 	}
 	/**对文件隔开****/

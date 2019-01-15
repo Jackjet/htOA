@@ -80,9 +80,9 @@ public interface PurchaseManager extends BasicManager {
 	 *
 	 * @param
 	 */
-	public void startNode(HttpServletRequest request, HttpServletResponse response,PurchaseInfor purchase);
-	public void nextNode(HttpServletRequest request, HttpServletResponse response,PurchaseInfor purchase);
-	public void beforeNode(HttpServletRequest request, HttpServletResponse response,PurchaseInfor purchase,PurchaseCheckInfor checkInfor);
+	public void startNode(HttpServletRequest request, HttpServletResponse response, PurchaseInfor purchase);
+	public void nextNode(HttpServletRequest request, HttpServletResponse response, PurchaseInfor purchase);
+	public void beforeNode(HttpServletRequest request, HttpServletResponse response, PurchaseInfor purchase, PurchaseCheckInfor checkInfor);
 
 
 	/**
@@ -124,7 +124,7 @@ public interface PurchaseManager extends BasicManager {
 	 */
 	public List getViewUsers(FlowInstanceInfor instance);
 
-	public boolean hasAllchecked(PurchaseInfor purchase,PurchaseCheckInfor check);
+	public boolean hasAllchecked(PurchaseInfor purchase, PurchaseCheckInfor check);
 	/** 判断是否当前审核人
 	 * @param purchase 实例信息
 	 * @param systemUser 当前用户
@@ -137,7 +137,7 @@ public interface PurchaseManager extends BasicManager {
 	 * @param user
 	 * @return
 	 */
-	public Map<String, Object> getNeedDealInstances(SystemUserInfor systemUser,int purchaseType);
+	public Map<String, Object> getNeedDealInstances(SystemUserInfor systemUser, int purchaseType);
 
 
 	/**

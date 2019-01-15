@@ -575,16 +575,16 @@ public class LxPurchaseController extends PurchaseBaseController {
 //			System.out.println(roleManager.belongRole(systemUser, caiwu));
 			if (roleManager.belongRole(systemUser, caiwu)){
 				//财务预算审核
-				queryString[0] = "from PurchasePackage where flowId=4 and roleId.roleId="+ caiwu.getRoleId()+"or manager.personId="+ systemUser.getPersonId()+")";
+				queryString[0] = "from PurchasePackage where flowId=4 and (roleId.roleId="+ caiwu.getRoleId()+" or manager.personId="+ systemUser.getPersonId()+")";
 			}
 			else if(roleManager.belongRole(systemUser, lingdao)){
 				//公司领导审核
-				queryString[0] = "from PurchasePackage where flowId=4 and roleId.roleId="+ lingdao.getRoleId()+"or manager.personId="+ systemUser.getPersonId()+")";
+				queryString[0] = "from PurchasePackage where flowId=4 and (roleId.roleId="+ lingdao.getRoleId()+" or manager.personId="+ systemUser.getPersonId()+")";
 			}else if(roleManager.belongRole(systemUser, jiguilingdao)){
 				//技术规划部领导
-				queryString[0] = "from PurchasePackage where flowId=4 and (roleId.roleId="+ jiguilingdao.getRoleId()+"or manager.personId="+ systemUser.getPersonId()+")";
+				queryString[0] = "from PurchasePackage where flowId=4 and (roleId.roleId="+ jiguilingdao.getRoleId()+" or manager.personId="+ systemUser.getPersonId()+")";
 			}else{
-				queryString[0] = "from PurchasePackage where flowId=4 and manager.personId="+ systemUser.getPersonId()+"or vicemanager.personId="+ systemUser.getPersonId()+")";
+				queryString[0] = "from PurchasePackage where flowId=4 and (manager.personId="+ systemUser.getPersonId()+" or vicemanager.personId="+ systemUser.getPersonId()+")";
 			}
 			queryString[1] = "select count(packageId) from PurchasePackage where flowId=4 ";
 

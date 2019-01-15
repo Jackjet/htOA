@@ -7,11 +7,10 @@ import lombok.Data;
 import javax.persistence.*;
 
 /**
- * Created by lijj.
- * com.kwchina.oa.purchase.zhaotou.entity
- * 2018/8/22 14:24
- *
- * @desc
+ * @Author :jjlee
+ * @Date :Created in 9:59 2018/12/19
+ * @Description :招投标供方信息
+ * @Version :lastest
  */
 @Data
 @Entity
@@ -20,16 +19,25 @@ import javax.persistence.*;
 public class SupplierDesc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer supplierDescId;         //主键
-    private String supplierName;         //供应商名称
-    private String managerRate;             //管理费率
-    private String constructRate;           //施工费率
-    private String qualification;           //资质
-    private String responseTime;            //维修响应时间
-    private String shelflife;               //质保期
-    private String attach;                  //附件
+    /**主键*/
+    private Integer supplierDescId;
+    /**名称*/
+    private String supplierName;
+    /**单价*/
+    private double unitPrice;
+    /**总价*/
+    private double totalPrice;
+    /**单位资质*/
+    private String qualification;
+    /**交货周期*/
+    private String responseTime;
+    /**备注*/
+    private String memo;
+    /**附件*/
+    private String attach;
+    /**关联开标信息*/
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bidInfoID",nullable = false)
-    private BidInfo bidInfo;                //关联开标信息
+    private BidInfo bidInfo;
 
 }

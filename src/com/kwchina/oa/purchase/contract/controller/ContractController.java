@@ -74,10 +74,10 @@ public class ContractController extends BasicController {
     public String start(ModelMap modelMap, HttpServletRequest request) throws Exception {
         String pId = request.getParameter("purchaseId");
         Integer purchaseId = Integer.parseInt(pId);
-        if (purchaseId != null && !purchaseId.equals("")) {
+        if (purchaseId != null && !"".equals(purchaseId)) {
             PurchaseInfor purchaseInfor = (PurchaseInfor) purchaseManager.get(purchaseId);
             modelMap.addAttribute("purchaseInfor", purchaseInfor);
-            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseInfor.getFlowId().getFlowName(),PurchaseTypeEnum.class).getCode());
+            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseInfor.getFlowId().getFlowName(),PurchaseTypeEnum.class).getCode(),purchaseInfor.getGuikouDepartment()!=null?purchaseInfor.getGuikouDepartment().getOrganizeId():null);
             modelMap.addAttribute("suppliers", allSupplier);
         }
         List departments = this.organizeManager.getDepartments();
@@ -109,7 +109,7 @@ public class ContractController extends BasicController {
         modelMap.addAttribute("contractInfo", contractInfo);
         modelMap.addAttribute("purchaseInfo", purchaseInfor);
         modelMap.addAttribute("purchaseLeader", ((OrganizeInfor) this.organizeManager.get(89)).getDirector().getPersonName());
-        if(purchaseInfor.getGuikouDepartment()!=null&&purchaseInfor.getGuikouDepartment().getOrganizeName().equals("技术规划部")){
+        if(purchaseInfor.getGuikouDepartment()!=null&& "技术规划部".equals(purchaseInfor.getGuikouDepartment().getOrganizeName())){
             if(StringUtil.isNotEmpty(purchaseInfor.getJigui())){
                 List<SystemUserInfor> jgers=new ArrayList<>();
                 String jg=purchaseInfor.getJigui();
@@ -122,12 +122,12 @@ public class ContractController extends BasicController {
         }
         String contractAttach = contractInfo.getContractAttach();
         String solutionAttach = contractInfo.getSolutionAttach();
-        if (solutionAttach != null && !solutionAttach.equals("")) {
+        if (solutionAttach != null && !"".equals(solutionAttach)) {
             String[][] attachment = processFile(solutionAttach);
             modelMap.addAttribute("solutionAttachNames", attachment[1]);
             modelMap.addAttribute("solutionAttachments", attachment[0]);
         }
-        if (contractAttach != null && !contractAttach.equals("")) {
+        if (contractAttach != null && !"".equals(contractAttach)) {
             String[][] attachment = processFile(contractAttach);
             modelMap.addAttribute("contractAttachNames", attachment[1]);
             modelMap.addAttribute("contractAttachments", attachment[0]);
@@ -154,10 +154,10 @@ public class ContractController extends BasicController {
                 isChecked = true;
             }
         }
-        if ((systemUser.getPersonId().equals(((OrganizeInfor) this.organizeManager.get(89)).getDirector().getPersonId()) && contractInfo.getContractStatus() == 1) || (systemUser.getPersonId().equals(purchaseInfor.getGuikouDepartment().getDirector().getPersonId()) && contractInfo.getContractStatus() == 2 && !purchaseInfor.getGuikouDepartment().getOrganizeName().equals("技术规划部")) || (inGroup && contractInfo.getContractStatus() == 3 && isChecked)) {
+        if ((systemUser.getPersonId().equals(((OrganizeInfor) this.organizeManager.get(89)).getDirector().getPersonId()) && contractInfo.getContractStatus() == 1) || (purchaseInfor.getGuikouDepartment()!=null&&systemUser.getPersonId().equals(purchaseInfor.getGuikouDepartment().getDirector().getPersonId()) && contractInfo.getContractStatus() == 2 && !"技术规划部".equals(purchaseInfor.getGuikouDepartment().getOrganizeName())) || (inGroup && contractInfo.getContractStatus() == 3 && isChecked)) {
             canReview = true;
         }
-        if (purchaseInfor.getGuikouDepartment() != null && purchaseInfor.getGuikouDepartment().getOrganizeName().equals("技术规划部")&&contractInfo.getContractStatus()==2) {
+        if (purchaseInfor.getGuikouDepartment() != null && "技术规划部".equals(purchaseInfor.getGuikouDepartment().getOrganizeName()) &&contractInfo.getContractStatus()==2) {
             if (StringUtil.isNotEmpty(purchaseInfor.getJigui())) {
                 String jg = purchaseInfor.getJigui();
                 for (int i = 0; i < jg.split(",").length; i++) {
@@ -189,11 +189,11 @@ public class ContractController extends BasicController {
         String attachment = this.uploadAttachment(multipartRequest, "contract");
         String[] attachs = cutOffattach(attachment);
         int attNum = 0;
-        if (!contractVo.getCav().equals("") && attNum < attachs.length) {
+        if (!"".equals(contractVo.getCav()) && attNum < attachs.length) {
             contractInfo.setContractAttach(attachs[attNum]);
             attNum++;
         }
-        if (!contractVo.getSav().equals("") && attNum < attachs.length) {
+        if (!"".equals(contractVo.getSav()) && attNum < attachs.length) {
             contractInfo.setSolutionAttach(attachs[attNum]);
             attNum++;
         }
@@ -204,7 +204,7 @@ public class ContractController extends BasicController {
         purchaseCharge.setContractInfo(contractInfo);
         purchaseCharge.setLayer(1);
         checkList.add(purchaseCharge);
-        if(purchaseInfor.getGuikouDepartment().getOrganizeName().equals("技术规划部")) {
+        if(purchaseInfor.getGuikouDepartment()!=null&& "技术规划部".equals(purchaseInfor.getGuikouDepartment().getOrganizeName())) {
             if(StringUtil.isNotEmpty(purchaseInfor.getJigui())){
                 String[] split = purchaseInfor.getJigui().split(",");
                 for(int i=0;i<split.length;i++){
@@ -273,7 +273,7 @@ public class ContractController extends BasicController {
             for (Iterator it = fList.iterator(); it.hasNext(); ) {
                 ContractInfo contractInfo = (ContractInfo) it.next();
                 // 把查询到的结果转化为VO
-                if(contractInfo.getExecutor().getPersonId().intValue()==systemUser.getPersonId().intValue()||systemUser.getUserName().equals("admin")){
+                if(contractInfo.getExecutor().getPersonId().intValue()==systemUser.getPersonId().intValue()|| "admin".equals(systemUser.getUserName())){
                     ContractListVo contractListVo = this.contractInfoManager.transPOToVO(contractInfo);
                     contractListVos.add(contractListVo);
                 }
@@ -306,7 +306,9 @@ public class ContractController extends BasicController {
     @RequestMapping(params = "method=check")
     public String check(ContractCheckVo checkVo, HttpServletRequest request, DefaultMultipartHttpServletRequest multipartRequest) throws Exception {
         Object obj = session.getAttribute(SESSION_ORDER_TOKEN);//获得令牌
-        if (obj == null) return "homepage";
+        if (obj == null) {
+            return "homepage";
+        }
         //移除令牌  无论成功还是失败
         session.removeAttribute(SESSION_ORDER_TOKEN);
         Integer contractID = checkVo.getContractID();
@@ -336,10 +338,10 @@ public class ContractController extends BasicController {
                     break;
                 }
             }
-            if (i==1){
+            if (i==1&&purchaseInfor.getGuikouDepartment()!=null){
                 contractInfo.setContractStatus(ContractStatusEnum.RELATED_DEPT.getCode());
             }
-            if((i==2&&j==1)||(i==3&&j==2)){
+            if((i==2&&j==1)||(i==3&&j==2)||(i==1&&j==0)){
                 contractInfo.setContractStatus(ContractStatusEnum.LEAD_GROUP.getCode());
             }
             if (i == checkInfos.size()) {
@@ -361,7 +363,7 @@ public class ContractController extends BasicController {
         PurchaseInfor purchaseInfo = (PurchaseInfor) this.purchaseManager.get(contractInfo.getPurchaseId());
         modelMap.addAttribute("contractInfo", contractInfo);
         modelMap.addAttribute("purchaseInfo", purchaseInfo);
-        if(purchaseInfo.getGuikouDepartment()!=null&&purchaseInfo.getGuikouDepartment().getOrganizeName().equals("技术规划部")){
+        if(purchaseInfo.getGuikouDepartment()!=null&& "技术规划部".equals(purchaseInfo.getGuikouDepartment().getOrganizeName())){
             if(StringUtil.isNotEmpty(purchaseInfo.getJigui())){
                 List<SystemUserInfor> jgers=new ArrayList<>();
                 String jg=purchaseInfo.getJigui();

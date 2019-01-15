@@ -83,7 +83,7 @@ public class SanfangController extends BasicController {
             SystemUserInfor applier = purchaseInfor.getApplier();
             OrganizeInfor applyDept = purchaseInfor.getDepartment();
             Timestamp startTime = purchaseInfor.getStartTime();
-            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseType,PurchaseTypeEnum.class).getCode());
+            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseType,PurchaseTypeEnum.class).getCode(),purchaseInfor.getGuikouDepartment()!=null?purchaseInfor.getGuikouDepartment().getOrganizeId():null);
             modelMap.addAttribute("suppliers", allSupplier);
             modelMap.addAttribute("purchaseId", purchaseId);
             modelMap.addAttribute("memo", memo);

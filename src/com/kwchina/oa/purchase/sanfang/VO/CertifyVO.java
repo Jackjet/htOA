@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 public class CertifyVO {
     private Integer certifyId;
-    private Integer supplierID;                //供方ID
+    private Integer supplierID;
     private String quality;
     private String price;
     private String service;

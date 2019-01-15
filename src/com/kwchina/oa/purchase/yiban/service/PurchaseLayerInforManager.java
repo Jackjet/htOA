@@ -79,7 +79,7 @@ public interface PurchaseLayerInforManager extends BasicManager {
 	
 	//分叉内的层，根据层与层的Transition,找到分叉内,且在其之前的预设层，递归查找
 
-	public void buildStartCheckInfor(PurchaseLayerInfor purchaseLayerInfor,PurchaseNode node);
+	public void buildStartCheckInfor(PurchaseLayerInfor purchaseLayerInfor, PurchaseNode node);
 	public void buildCheckInfor(HttpServletRequest request, PurchaseLayerInfor purchaseLayerInfor, PurchaseNode node);
 
 }

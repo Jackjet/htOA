@@ -51,14 +51,10 @@
         {
             for(var i=0;i < document.instanceInforForm.elements.length-1;i++)
             {
-                if(document.instanceInforForm.elements[i].value==""&&document.instanceInforForm.elements[i].type!="file")
+                if(document.instanceInforForm.elements[i].value==""&&document.instanceInforForm.elements[i].type!="file"&&document.instanceInforForm.elements[i].type!="hidden")
                 {
                     document.instanceInforForm.elements[i].focus();
-                    sweetAlert(
-                        '',
-                        '表单未填写完整',
-                        'error'
-                    )
+                 alert("表单未填写完整");
                     return false;
                 }
             }
@@ -88,7 +84,7 @@
 				<span class="ui-jqgrid-title">查看审批信息 &nbsp;【招投标 主办人:${bidInfo.purchaseExecutor.person.personName}  发起时间:${bidInfo.startTime}】</span>
 			</div>
 			<div style="width: 90%"><hr style="border:0.5px solid #22FBFF;" /></div>
-			<input type="hidden" name="bidInfoId" value="${bidInfo.bidInfoId}"/>
+			<input id="bidInfoId" type="hidden" name="bidInfoId" value="${bidInfo.bidInfoId}"/>
 			<%-- 审核实例信息 --%>
 			<%@include file="includeInstance.jsp" %>
 			<div style="width: 100%" class="ui-state-default ui-jqgrid-pager ui-corner-bottom" dir="ltr">

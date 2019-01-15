@@ -22,7 +22,8 @@ public class SupplierInforDAOImpl extends BasicDaoImpl<SupplierInfor> implements
 		List list = getResultByQueryString(sql);
 		if(list.size()>0){
 			SupplierInfor supplierInfor = (SupplierInfor)list.get(0);
-			String supplierContact = supplierInfor.getSupplierContact();
+			String supplierContact = supplierInfor.getContactName()+"/"+supplierInfor.getSupplierContact();
+
 			return supplierContact;
 		}
 		return null;

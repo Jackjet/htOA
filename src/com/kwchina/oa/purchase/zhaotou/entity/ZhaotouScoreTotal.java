@@ -6,6 +6,7 @@ import com.kwchina.extend.template.entity.ZhaotouTemplateInfo;
 import lombok.Data;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * Create by yuanjl on 2018/5/30
@@ -26,4 +27,6 @@ public class ZhaotouScoreTotal {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "bidInfoId",nullable = false)
     private BidInfo bidInfo;
+    @OneToMany(mappedBy = "scoreTotal",fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    private List<EachTotal> eachTotals;
 }

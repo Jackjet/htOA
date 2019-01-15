@@ -97,7 +97,7 @@
 							<c:choose>
 								<c:when test="${!_CanBefore && !_CanDisagree && !_CanBefore}">
 									<input type="hidden" name="status" value="1" id="ty"  /><label for="ty"></label><br/>
-									<form:textarea path="checkComment" cols="80" rows="5" /><div id="checkCommentTip"></div>
+									<textarea name="checkComment" cols="80" rows="5" > </textarea><div id="checkCommentTip"></div>
 								</c:when>
 								<c:otherwise>
 									<c:if test="${_CanAgree}">

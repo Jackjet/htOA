@@ -1,5 +1,6 @@
 package com.kwchina.oa.purchase.zhaotou.controller;
 
+import com.kwchina.core.base.entity.PersonInfor;
 import com.kwchina.core.base.entity.RoleInfor;
 import com.kwchina.core.base.entity.SystemUserInfor;
 import com.kwchina.core.base.service.OrganizeManager;
@@ -41,23 +42,20 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
-/**
- * Created by asus on 2018/7/23.
- */
 @Controller
 @RequestMapping(value = "bid.do")
 public class ZhaotouController extends BasicController {
     @Autowired
     private OrganizeManager organizeManager;
-    @Autowired
-    private PersonInforManager personInforManager;
     @Autowired
     private SupplierInforManager supplierInforManager;
     @Autowired
@@ -77,7 +75,8 @@ public class ZhaotouController extends BasicController {
     private PurchaseManager purchaseManager;
     @Autowired
     private BidInfoManager bidInfoManager;
-    public static final String SESSION_ORDER_TOKEN = "SESSION_ORDER_TOKEN";//提交令牌，防止重复提交
+    /**提交令牌，防止重复提交*/
+    public static final String SESSION_ORDER_TOKEN = "SESSION_ORDER_TOKEN";
 
     @RequestMapping(params = "method=start")
     public String start(ModelMap modelMap, HttpServletRequest request) {
@@ -86,9 +85,20 @@ public class ZhaotouController extends BasicController {
             Integer purchaseId = Integer.parseInt(pId);
             PurchaseInfor purchaseInfo = (PurchaseInfor) purchaseManager.get(purchaseId);
             modelMap.addAttribute("purchase", purchaseInfo);
-            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseInfo.getFlowId().getFlowName(),PurchaseTypeEnum.class).getCode());
+            List allSupplier = this.supplierInforManager.getInSupplier(EnumUtil.getByMsg(purchaseInfo.getFlowId().getFlowName(),PurchaseTypeEnum.class).getCode(),purchaseInfo.getGuikouDepartment()!=null?purchaseInfo.getGuikouDepartment().getOrganizeId():null);
             modelMap.addAttribute("suppliers", allSupplier);
         }
+        //根据职级获取用户
+        List users = this.systemUserManager.getUserByPosition(PersonInfor._Position_Tag);
+        modelMap.addAttribute("_Users", users);
+
+        //获取职级大于一定值的用户
+        List otherUsers = this.systemUserManager.getOtherPositionUser(PersonInfor._Position_Tag);
+        modelMap.addAttribute("_OtherUsers", otherUsers);
+
+        //全部部门信息
+        List departments = this.organizeManager.getDepartments();
+        modelMap.addAttribute("_Departments", departments);
         List<ZhaotouTemplate> allTemplates = this.templateManager.getAllTemplates();
         modelMap.addAttribute("templates", allTemplates);
         return "zhaotou/kaibiao";
@@ -118,6 +128,7 @@ public class ZhaotouController extends BasicController {
         boolean canReview = false;
         boolean inGroup = false;
         boolean isChecked=false;
+        boolean hasChecked=false;
         SystemUserInfor checker = SysCommonMethod.getSystemUser(request);
         Iterator<ZhaotouScore> iterator2 = bidInfo.getScores().iterator();
         while (iterator2.hasNext()) {
@@ -133,15 +144,27 @@ public class ZhaotouController extends BasicController {
         modelMap.addAttribute("checker", checker);
         modelMap.addAttribute("canEdit", isChecked);
 
+        Iterator<ZhaotouCheckInfor> iterator3 = bidInfo.getCheckInfors().iterator();
+        while (iterator3.hasNext()) {
+            ZhaotouCheckInfor next = iterator3.next();
+            if (next.getChecker().getPersonId().equals(systemUser.getPersonId()) && next.getCheckResult() != null) {
+                hasChecked = false;
+                break;
+            } else {
+                hasChecked = true;
+            }
+        }
         Set<SystemUserInfor> checker1s = ((RoleInfor) roleManager.get(59)).getUsers();
         modelMap.addAttribute("checkers", checker1s);
         Iterator<SystemUserInfor> iterator1 = checker1s.iterator();
         while (iterator1.hasNext()) {
-            if (iterator1.next().getPersonId().equals(checker.getPersonId()) && bidInfo.getZhaotouStatus() == 3) {
+            SystemUserInfor next = iterator1.next();
+            if (next.getPersonId().equals(checker.getPersonId()) && bidInfo.getZhaotouStatus() == 3&&hasChecked) {
                 canReview = true;
                 break;
             }
         }
+
         modelMap.addAttribute("canReview", canReview);
         boolean canSave = false;
         if (checker.getPersonId().equals(bidInfo.getPurchaseExecutor().getPersonId()) || this.roleManager.belongRole(systemUser, charge)) {
@@ -151,7 +174,11 @@ public class ZhaotouController extends BasicController {
         }
         modelMap.addAttribute("canSave", canSave);
 
-        Set<SystemUserInfor> checkers = ((RoleInfor) roleManager.get(58)).getUsers();
+        Set<SystemUserInfor> checkers = new HashSet<>();
+        List<ZhaotouScore> scores = bidInfo.getScores();
+        for(ZhaotouScore score:scores){
+            checkers.add(score.getChecker());
+        }
         modelMap.addAttribute("checkers", checkers);
         Iterator<SystemUserInfor> iterator = checkers.iterator();
         while (iterator.hasNext()) {
@@ -174,31 +201,29 @@ public class ZhaotouController extends BasicController {
         bidInfo.setZbCode(bidInfoVo.getZbCode());
         PurchaseInfor purchaseInfor = (PurchaseInfor) this.purchaseManager.get(bidInfoVo.getPurchaseId());
         bidInfo.setZhaotouMemo(purchaseInfor.getApplication());
-        bidInfo.setStartTime(Convert.StrToDate(bidInfoVo.getStartDate(), "yyyy-MM-dd HH:mm:ss"));
+        bidInfo.setStartTime(Convert.StrToDate(bidInfoVo.getStartDate(), "yyyy-MM-dd HH:mm"));
         bidInfo.setZhaotouApplier(purchaseInfor.getApplier());
         bidInfo.setPurchaseExecutor(SysCommonMethod.getSystemUser(request));
         bidInfo.setZhaotouDepartment(purchaseInfor.getDepartment());
         bidInfo.setPurchaseType(EnumUtil.getByMsg(bidInfoVo.getPurchaseTypeMsg(), PurchaseTypeEnum.class).getCode());
         bidInfo.setPurchaseId(bidInfoVo.getPurchaseId());
-        SystemUserInfor reader = (SystemUserInfor) this.systemUserManager.get(personInforManager.findPersonByName(bidInfoVo.getReaderName()).getPersonId());
-        bidInfo.setReader(reader);
-        SystemUserInfor supervisor = (SystemUserInfor) this.systemUserManager.get(personInforManager.findPersonByName(bidInfoVo.getSupervisorName()).getPersonId());
-        bidInfo.setSupervisor(supervisor);
+        bidInfo.setReaderName(bidInfoVo.getReaderName());
+        bidInfo.setSupervisorName(bidInfoVo.getSupervisorName());
         ZhaotouTemplate template = this.templateManager.findByTemplateName(bidInfoVo.getTemplateName());
         bidInfo.setTemplate(template);
         String attachment = this.uploadAttachment(multipartRequest, "zhaotou");
         String[] attachs = cutOffattach(attachment);
         int attNum = 0;
         List<SupplierDesc> supplierDescs = new ArrayList<>();
-        if (!(bidInfoVo.getSupplierName1() == null || bidInfoVo.getSupplierName1().equals(""))) {
+        if (!(bidInfoVo.getSupplierName1() == null || "".equals(bidInfoVo.getSupplierName1()))) {
             SupplierDesc supplierDesc1 = new SupplierDesc();
             supplierDesc1.setBidInfo(bidInfo);
             supplierDesc1.setSupplierName(bidInfoVo.getSupplierName1());
-            supplierDesc1.setConstructRate(bidInfoVo.getConstructRate1());
-            supplierDesc1.setManagerRate(bidInfoVo.getManagerRate1());
-            supplierDesc1.setQualification(bidInfoVo.getQualification1());
             supplierDesc1.setResponseTime(bidInfoVo.getResponseTime1());
-            supplierDesc1.setShelflife(bidInfoVo.getShelflife1());
+            supplierDesc1.setUnitPrice(bidInfoVo.getUnitPrice1());
+            supplierDesc1.setQualification(bidInfoVo.getQualification1());
+            supplierDesc1.setTotalPrice(bidInfoVo.getTotalPrice1());
+            supplierDesc1.setMemo(bidInfoVo.getMemo1());
             if (StringUtil.isNotEmpty(bidInfoVo.getSav1()) && attNum < attachs.length) {
                 supplierDesc1.setAttach(attachs[attNum]);
                 attNum++;
@@ -209,11 +234,11 @@ public class ZhaotouController extends BasicController {
             SupplierDesc supplierDesc2 = new SupplierDesc();
             supplierDesc2.setBidInfo(bidInfo);
             supplierDesc2.setSupplierName(bidInfoVo.getSupplierName2());
-            supplierDesc2.setConstructRate(bidInfoVo.getConstructRate2());
-            supplierDesc2.setManagerRate(bidInfoVo.getManagerRate2());
-            supplierDesc2.setQualification(bidInfoVo.getQualification2());
             supplierDesc2.setResponseTime(bidInfoVo.getResponseTime2());
-            supplierDesc2.setShelflife(bidInfoVo.getShelflife2());
+            supplierDesc2.setUnitPrice(bidInfoVo.getUnitPrice2());
+            supplierDesc2.setQualification(bidInfoVo.getQualification2());
+            supplierDesc2.setTotalPrice(bidInfoVo.getTotalPrice2());
+            supplierDesc2.setMemo(bidInfoVo.getMemo2());
             if (StringUtil.isNotEmpty(bidInfoVo.getSav2()) && attNum < attachs.length) {
                 supplierDesc2.setAttach(attachs[attNum]);
                 attNum++;
@@ -224,11 +249,11 @@ public class ZhaotouController extends BasicController {
             SupplierDesc supplierDesc3 = new SupplierDesc();
             supplierDesc3.setBidInfo(bidInfo);
             supplierDesc3.setSupplierName(bidInfoVo.getSupplierName3());
-            supplierDesc3.setConstructRate(bidInfoVo.getConstructRate3());
-            supplierDesc3.setManagerRate(bidInfoVo.getManagerRate3());
-            supplierDesc3.setQualification(bidInfoVo.getQualification3());
             supplierDesc3.setResponseTime(bidInfoVo.getResponseTime3());
-            supplierDesc3.setShelflife(bidInfoVo.getShelflife3());
+            supplierDesc3.setUnitPrice(bidInfoVo.getUnitPrice3());
+            supplierDesc3.setQualification(bidInfoVo.getQualification3());
+            supplierDesc3.setTotalPrice(bidInfoVo.getTotalPrice3());
+            supplierDesc3.setMemo(bidInfoVo.getMemo3());
             if (StringUtil.isNotEmpty(bidInfoVo.getSav3()) && attNum < attachs.length) {
                 supplierDesc3.setAttach(attachs[attNum]);
                 attNum++;
@@ -239,11 +264,11 @@ public class ZhaotouController extends BasicController {
             SupplierDesc supplierDesc4 = new SupplierDesc();
             supplierDesc4.setBidInfo(bidInfo);
             supplierDesc4.setSupplierName(bidInfoVo.getSupplierName4());
-            supplierDesc4.setConstructRate(bidInfoVo.getConstructRate4());
-            supplierDesc4.setManagerRate(bidInfoVo.getManagerRate4());
-            supplierDesc4.setQualification(bidInfoVo.getQualification4());
             supplierDesc4.setResponseTime(bidInfoVo.getResponseTime4());
-            supplierDesc4.setShelflife(bidInfoVo.getShelflife4());
+            supplierDesc4.setUnitPrice(bidInfoVo.getUnitPrice4());
+            supplierDesc4.setQualification(bidInfoVo.getQualification4());
+            supplierDesc4.setTotalPrice(bidInfoVo.getTotalPrice4());
+            supplierDesc4.setMemo(bidInfoVo.getMemo4());
             if (StringUtil.isNotEmpty(bidInfoVo.getSav4()) && attNum < attachs.length) {
                 supplierDesc4.setAttach(attachs[attNum]);
                 attNum++;
@@ -254,11 +279,11 @@ public class ZhaotouController extends BasicController {
             SupplierDesc supplierDesc5 = new SupplierDesc();
             supplierDesc5.setBidInfo(bidInfo);
             supplierDesc5.setSupplierName(bidInfoVo.getSupplierName5());
-            supplierDesc5.setConstructRate(bidInfoVo.getConstructRate5());
-            supplierDesc5.setManagerRate(bidInfoVo.getManagerRate5());
-            supplierDesc5.setQualification(bidInfoVo.getQualification5());
             supplierDesc5.setResponseTime(bidInfoVo.getResponseTime5());
-            supplierDesc5.setShelflife(bidInfoVo.getShelflife5());
+            supplierDesc5.setUnitPrice(bidInfoVo.getUnitPrice5());
+            supplierDesc5.setQualification(bidInfoVo.getQualification5());
+            supplierDesc5.setTotalPrice(bidInfoVo.getTotalPrice5());
+            supplierDesc5.setMemo(bidInfoVo.getMemo5());
             if (StringUtil.isNotEmpty(bidInfoVo.getSav5()) && attNum < attachs.length) {
                 supplierDesc5.setAttach(attachs[attNum]);
                 attNum++;
@@ -282,25 +307,38 @@ public class ZhaotouController extends BasicController {
         }
         bidInfo.setCheckInfors(checkInfors);
         List<ZhaotouScore> scores = new ArrayList<>();
-        for (int k = 1; k <= ((RoleInfor) roleManager.get(58)).getUsers().size(); k++) {
-            for (int i = 1; i <= bidInfo.getTemplate().getTemplateInfos().size(); i++) {
-                for (int j = 1; j <= bidInfo.getSuppliers().size(); j++) {
-                    ZhaotouScore zhaotouScore = new ZhaotouScore();
-                    zhaotouScore.setSupplierDesc(bidInfo.getSuppliers().get(j - 1));
-                    zhaotouScore.setBidInfo(bidInfo);
-                    zhaotouScore.setZhaotouTemplateInfo(bidInfo.getTemplate().getTemplateInfos().get(i - 1));
-                    List<SystemUserInfor> userInfors = new ArrayList<>(((RoleInfor) roleManager.get(58)).getUsers());
-                    zhaotouScore.setChecker(userInfors.get(k - 1));
-                    scores.add(zhaotouScore);
+
+        int[] personIds = bidInfoVo.getPersonIds();
+        if (personIds != null) {
+            for (int k = 0; k < personIds.length; k++) {
+                for (int i = 1; i <= bidInfo.getTemplate().getTemplateInfos().size(); i++) {
+                    for (int j = 1; j <= bidInfo.getSuppliers().size(); j++) {
+                        ZhaotouScore zhaotouScore = new ZhaotouScore();
+                        zhaotouScore.setSupplierDesc(bidInfo.getSuppliers().get(j - 1));
+                        zhaotouScore.setBidInfo(bidInfo);
+                        zhaotouScore.setZhaotouTemplateInfo(bidInfo.getTemplate().getTemplateInfos().get(i - 1));
+                        zhaotouScore.setChecker((SystemUserInfor) this.systemUserManager.get(personIds[k]));
+                        scores.add(zhaotouScore);
+                    }
                 }
             }
         }
+
         bidInfo.setScores(scores);
         List<ZhaotouScoreTotal> totals = new ArrayList<>();
         for (SupplierDesc supplierDesc : bidInfo.getSuppliers()) {
             ZhaotouScoreTotal zhaotouScoreTotal = new ZhaotouScoreTotal();
             zhaotouScoreTotal.setSupplierName(supplierDesc.getSupplierName());
+            zhaotouScoreTotal.setPrice(supplierDesc.getTotalPrice());
             zhaotouScoreTotal.setBidInfo(bidInfo);
+            List<EachTotal> eachTotals=new ArrayList<>();
+            for(int i=0;i< personIds.length; i++){
+                EachTotal eachTotal=new EachTotal();
+                eachTotal.setScorer((SystemUserInfor) this.systemUserManager.get(personIds[i]));
+                eachTotal.setScoreTotal(zhaotouScoreTotal);
+                eachTotals.add(eachTotal);
+            }
+            zhaotouScoreTotal.setEachTotals(eachTotals);
             totals.add(zhaotouScoreTotal);
         }
         bidInfo.setTotals(totals);
@@ -354,8 +392,10 @@ public class ZhaotouController extends BasicController {
 
     @RequestMapping(params = "method=check")
     public String check(CheckVO checkVO, HttpServletRequest request) throws Exception {
-        Object obj = session.getAttribute(SESSION_ORDER_TOKEN);//获得令牌
-        if (obj == null) return "homepage";
+        Object obj = session.getAttribute(SESSION_ORDER_TOKEN);
+        if (obj == null) {
+            return "homepage";
+        }
         //移除令牌  无论成功还是失败
         session.removeAttribute(SESSION_ORDER_TOKEN);
         Integer bidInfoId = checkVO.getBidInfoId();
@@ -380,6 +420,7 @@ public class ZhaotouController extends BasicController {
         }
         if (i == ((RoleInfor) roleManager.get(59)).getUsers().size()) {
             bidInfo.setZhaotouStatus(ZhaotouStatusEnum.COMPLETE.getCode());
+            bidInfo.setZhaotouEndTime(new Date());
             purchaseInfor.setPurchaseStatus(10);
         }
         purchaseManager.save(purchaseInfor);
@@ -394,10 +435,12 @@ public class ZhaotouController extends BasicController {
         Integer checkerId = Integer.parseInt(request.getParameter("checkerId"));
         SystemUserInfor checker = (SystemUserInfor) this.systemUserManager.get(checkerId);
         List<ZhaotouScore> scores = bidInfo.getScores();
+        int size = bidInfo.getTemplate().getTemplateInfos().size();
+        int size1 = bidInfo.getSuppliers().size();
         int total = 0;
-        for (int k = 1; k <= ((RoleInfor) roleManager.get(58)).getUsers().size(); k++) {
-            for (int i = 1; i <= bidInfo.getTemplate().getTemplateInfos().size(); i++) {
-                for (int j = 1; j <= bidInfo.getSuppliers().size(); j++) {
+        for (int k = 1; k <= scores.size()/(size*size1); k++) {
+            for (int i = 1; i <= size; i++) {
+                for (int j = 1; j <= size1; j++) {
                     StringBuffer pname = new StringBuffer("score");
                     pname.append(i).append(j);
                     System.out.println(pname);
@@ -409,6 +452,16 @@ public class ZhaotouController extends BasicController {
                 }
             }
         }
+        List<ZhaotouScoreTotal> totals = bidInfo.getTotals();
+        for(int i=0;i<totals.size();i++){
+            for(EachTotal eachTotal:totals.get(i).getEachTotals()){
+                if(eachTotal.getScorer().getPerson().getPersonId().intValue()==checkerId.intValue()){
+                    eachTotal.setTotalTech(Integer.parseInt(request.getParameter("totalTech"+i)));
+                    eachTotal.setTotalBiz(Integer.parseInt(request.getParameter("totalBiz"+i)));
+                }
+            }
+        }
+
         int count = 0;
         for (int i = 0; i < scores.size(); i++) {
             if (scores.get(i).getScore() != null) {
@@ -417,6 +470,21 @@ public class ZhaotouController extends BasicController {
         }
         if (count == scores.size()) {
             bidInfo.setZhaotouStatus(ZhaotouStatusEnum.SET_BID.getCode());
+            for(ZhaotouScoreTotal zhaotouScoreTotal:totals){
+                List<EachTotal> eachTotals = zhaotouScoreTotal.getEachTotals();
+                double allTech=0;
+                double allBiz=0;
+                int eachSize=eachTotals.size();
+                for(EachTotal eachTotal:eachTotals){
+                    allTech+=eachTotal.getTotalTech();
+                    allBiz+=eachTotal.getTotalBiz();
+                }
+                double techAvg=allTech/eachSize;
+                double bizAvg=allBiz/eachSize;
+                zhaotouScoreTotal.setJsAvgScore(techAvg);
+                zhaotouScoreTotal.setSwAvgScore(bizAvg);
+                zhaotouScoreTotal.setTotalScore(techAvg+bizAvg);
+            }
         }
         bidInfoManager.save(bidInfo);
         return "/core/success";
@@ -429,6 +497,22 @@ public class ZhaotouController extends BasicController {
         BidInfo bidInfo = (BidInfo) bidInfoManager.get(bidInfoId);
         modelMap.addAttribute("bidInfo", bidInfo);
         return "zhaotou/editCheck";
+    }
+
+    @RequestMapping(params = "method=outPrice", method = RequestMethod.POST)
+    @ResponseBody
+    public double contact(HttpServletRequest request) {
+        String supplierName = request.getParameter("supplierName");
+        String bidId = request.getParameter("bidInfoId");
+        BidInfo bidInfo = (BidInfo) this.bidInfoManager.get(Integer.parseInt(bidId));
+        List<SupplierDesc> suppliers = bidInfo.getSuppliers();
+        double finalPrice=0;
+        for(SupplierDesc desc:suppliers){
+            if(desc.getSupplierName().equals(supplierName)){
+                finalPrice = desc.getTotalPrice();
+            }
+        }
+        return finalPrice;
     }
 
     @RequestMapping(params = "method=bidInfoList")
@@ -463,7 +547,7 @@ public class ZhaotouController extends BasicController {
             for (Iterator it = fList.iterator(); it.hasNext(); ) {
                 BidInfo bidInfo = (BidInfo) it.next();
                 // 把查询到的结果转化为VO
-                if (bidInfo.getPurchaseExecutor().getPersonId() == systemUser.getPersonId().intValue() || bidInfo.getReader().getPersonId().intValue() == systemUser.getPersonId().intValue() || systemUser.getUserName().equals("admin")) {
+                if (bidInfo.getPurchaseExecutor().getPersonId() == systemUser.getPersonId().intValue() || systemUser.getPerson().getPersonName().equals(bidInfo.getReaderName()) || systemUser.getUserName().equals("admin")) {
                     BidListVO bidListVO = this.bidInfoManager.transPOToVO(bidInfo);
                     bidListVos.add(bidListVO);
                 }
@@ -487,14 +571,13 @@ public class ZhaotouController extends BasicController {
         JSONObject jsonObj = new JSONObject();
         //定义rows，存放数据
         JSONArray rows = new JSONArray();
-        jsonObj.put("page", pl.getPages().getCurrPage());   //当前页(名称必须为page)
-        jsonObj.put("total", pl.getPages().getTotalPage()); //总页数(名称必须为total)
-        jsonObj.put("records", pl.getPages().getTotals());    //总记录数(名称必须为records)
+        jsonObj.put("page", pl.getPages().getCurrPage());
+        jsonObj.put("total", pl.getPages().getTotalPage());
+        jsonObj.put("records", pl.getPages().getTotals());
 
         JSONConvert convert = new JSONConvert();
         rows = convert.modelCollect2JSONArray(bidListVos, new ArrayList());
-        jsonObj.put("rows", rows);                            //返回到前台每页显示的数据(名称必须为rows)
-        //设置字符编码
+        jsonObj.put("rows", rows);
         response.setContentType(CoreConstant.CONTENT_TYPE);
         response.getWriter().print(jsonObj);
 
@@ -509,14 +592,9 @@ public class ZhaotouController extends BasicController {
         List awareObject = new ArrayList();
         SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
         if (systemUser != null) {
-            String queryHQL = "";
             Integer personId = systemUser.getPersonId();
             Set<BidInfo> allResult = new HashSet<>();
-            RoleInfor charge = (RoleInfor) this.roleManager.get(PurchaseCheckInfor.Check_Role_Caigou);
-
-            if (this.roleManager.belongRole(systemUser, charge)) {
-                queryHQL = "from BidInfo where zhaotouStatus=2";
-            }
+            String queryHQL = "from BidInfo where zhaotouStatus=2 and purchaseExecutor.personId="+personId;
             if (StringUtil.isNotEmpty(queryHQL)) {
                 List bidInfos = this.bidInfoManager.getResultByQueryString(queryHQL);
                 allResult.addAll(bidInfos);

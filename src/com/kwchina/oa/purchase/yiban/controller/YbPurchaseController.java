@@ -493,6 +493,20 @@ public class YbPurchaseController extends PurchaseBaseController {
 
 //						obj.put("charger", null);
 //					}
+				String purchaseWay = "";
+				if(fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() < 5){
+					purchaseWay = "";
+				}else if (fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() > 4)	{
+					purchaseWay = "直接采购";
+				}else if (fi.getPurchaseWay() == 1)	{
+					purchaseWay = "三方比价";
+				}else if (fi.getPurchaseWay() == 2)	{
+					purchaseWay = "招投标";
+				}else if (fi.getPurchaseWay() == 3)	{
+					purchaseWay = "合同变更";
+				}
+				obj.put("purchaseWay", purchaseWay);
+
 				String status = "采购结束";
 				if (fi.getPurchaseStatus() == 0) {
 					status = "部门领导审核中";
@@ -926,6 +940,19 @@ public class YbPurchaseController extends PurchaseBaseController {
 
 //						obj.put("charger", null);
 //					}
+				String purchaseWay = "";
+				if(fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() < 5){
+					purchaseWay = "";
+				}else if (fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() > 4)	{
+					purchaseWay = "直接采购";
+				}else if (fi.getPurchaseWay() == 1)	{
+					purchaseWay = "三方比价";
+				}else if (fi.getPurchaseWay() == 2)	{
+					purchaseWay = "招投标";
+				}else if (fi.getPurchaseWay() == 3)	{
+					purchaseWay = "合同变更";
+				}
+				obj.put("purchaseWay", purchaseWay);
 				String status = "采购结束";
 				if (fi.getPurchaseStatus() == 0) {
 					status = "部门领导审核中";
@@ -4479,6 +4506,33 @@ public class YbPurchaseController extends PurchaseBaseController {
 		return "../indexHome";
 	}
 
+	@RequestMapping(params = "method=backoa")
+	public String backoa(HttpServletRequest request, HttpServletResponse response) throws Exception {
+
+
+		SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
+		String ausername = systemUser.getUserName();
+		String apassword = systemUser.getPassword();
+
+
+
+		return "redirect://adLogin.do?userName="+ausername+"&password="+apassword;
+
+	}
+
+//	//发起合同
+//	@RequestMapping(params = "method=editht")
+//	public String editht(HttpServletRequest request, HttpServletResponse response) throws Exception {
+//
+//		SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
+//		String purchaseId = request.getParameter("purchaseId");
+//		PurchaseInfor purchaseInfor = (PurchaseInfor)this.purchaseManager.get(Integer.parseInt(purchaseId));
+//
+//		request.setAttribute("flowId",86);
+//		request.setAttribute("_Purchase",purchaseInfor);
+//		return "../workflow/editInstance";
+//
+//	}
 
 	public void turnPackageStatus(SystemUserInfor systemUser,String packageId){
 		boolean hasAllCheck = true;

@@ -11,17 +11,15 @@ import com.kwchina.core.common.controller.BasicController;
 import com.kwchina.core.common.page.PageList;
 import com.kwchina.core.common.page.Pages;
 import com.kwchina.core.sys.CoreConstant;
-import com.kwchina.core.util.DateHelper;
 import com.kwchina.core.util.ExcelObject;
 import com.kwchina.core.util.ExcelOperate;
 import com.kwchina.core.util.json.JSONConvert;
 import com.kwchina.core.util.string.StringUtil;
+import com.kwchina.oa.purchase.sanfang.DTO.SupplierDTO;
 import com.kwchina.oa.purchase.sanfang.VO.CertifyVO;
 import com.kwchina.oa.purchase.sanfang.VO.SupplierCheckVO;
 import com.kwchina.oa.purchase.sanfang.VO.SupplierVO;
-import com.kwchina.oa.purchase.sanfang.entity.CertifyInfo;
-import com.kwchina.oa.purchase.sanfang.entity.SupplierCheckInfor;
-import com.kwchina.oa.purchase.sanfang.entity.SupplierInfor;
+import com.kwchina.oa.purchase.sanfang.entity.*;
 import com.kwchina.oa.purchase.sanfang.enums.PurchaseTypeEnum;
 import com.kwchina.oa.purchase.sanfang.enums.SupplierStatusEnum;
 import com.kwchina.oa.purchase.sanfang.service.CertifyInfoManager;
@@ -32,16 +30,18 @@ import com.kwchina.oa.purchase.sanfang.utils.EnumUtil;
 import com.kwchina.oa.util.SysCommonMethod;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import org.apache.commons.beanutils.BeanUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.multipart.support.DefaultMultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.net.URLDecoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -65,54 +65,147 @@ public class SupplierController extends BasicController {
     private SupplierCheckManager supplierCheckManager;
     @Autowired
     HttpSession session;
-    public static final String SESSION_ORDER_TOKEN = "SESSION_ORDER_TOKEN";//订单提交令牌，防止重复提交
+    public static final String SESSION_ORDER_TOKEN = "SESSION_ORDER_TOKEN";
 
     @RequestMapping(params = "method=supplierList")
     public void supplierList(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        //构造查询语句
         String[] queryString = this.supplierInforManager.generateQueryString1("SupplierInfor", "supplierID", getSearchParams(request));
         String page = request.getParameter("page");        //当前页
         String rowsNum = request.getParameter("rows");    //每页显示的行数
         String status = request.getParameter("status");
+        String single = request.getParameter("single");
+        String sponsorName = request.getParameter("sponsorName");
+        if (StringUtil.isNotEmpty(sponsorName)) {
+            sponsorName = URLDecoder.decode(sponsorName, "utf-8");
+        }
+        String supplierName = request.getParameter("supplierName");
+        if (StringUtil.isNotEmpty(supplierName)) {
+            supplierName = URLDecoder.decode(supplierName, "utf-8");
+        }
+        String beginTime = request.getParameter("beginTime");
+        String endTime = request.getParameter("endTime");
+        String serviceDetail = request.getParameter("serviceDetail");
+        if (StringUtil.isNotEmpty(serviceDetail)) {
+            serviceDetail = URLDecoder.decode(serviceDetail, "utf-8");
+        }
+
         Pages pages = new Pages(request);
         pages.setPage(Integer.valueOf(page));
         pages.setPerPageNum(Integer.valueOf(rowsNum));
         PageList pl = this.supplierInforManager.getResultByQueryString(queryString[0], queryString[1], true, pages);
-        List list = pl.getObjectList();
-        List fList = new ArrayList<>();
-        if (StringUtil.isNotEmpty(status)) {
-            Integer state = Integer.parseInt(status);
-            for (Iterator it = list.iterator(); it.hasNext(); ) {
-                SupplierInfor supplierInfor = (SupplierInfor) it.next();
-                if (supplierInfor.getStatus().equals(state)) {
-                    fList.add(supplierInfor);
+        List<SupplierInfor> list = pl.getObjectList();
+        List<SupplierInfor> sList = new ArrayList<>();
+        List<SupplierInfor> mList = new ArrayList<>();
+        List<SupplierInfor> nList = new ArrayList<>();
+        List<SupplierInfor> pList = new ArrayList<>();
+        List<SupplierInfor> tList = new ArrayList<>();
+        List<SupplierInfor> gList = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date begin = null;
+        Date end = null;
+        if (StringUtil.isNotEmpty(beginTime)) {
+            begin = sdf.parse(beginTime + " 00:00:00");
+        }
+        if (StringUtil.isNotEmpty(endTime)) {
+            end = sdf.parse(endTime + " 23:59:59");
+        }
+        for (SupplierInfor supplierInfor : list) {
+            if (supplierInfor.getExpiration() != null && StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)) {
+                if (supplierInfor.getExpiration().after(begin) && supplierInfor.getExpiration().before(end)) {
+                    sList.add(supplierInfor);
                 }
+            } else if (supplierInfor.getExpiration() != null && StringUtil.isNotEmpty(beginTime) && !StringUtil.isNotEmpty(endTime)) {
+                if (supplierInfor.getExpiration().after(begin)) {
+                    sList.add(supplierInfor);
+                }
+            } else if (supplierInfor.getExpiration() != null && !StringUtil.isNotEmpty(beginTime) && StringUtil.isNotEmpty(endTime)) {
+                if (supplierInfor.getExpiration().before(end)) {
+                    sList.add(supplierInfor);
+                }
+            } else if(supplierInfor.getExpiration()!=null&&!StringUtil.isNotEmpty(beginTime)&&!StringUtil.isNotEmpty(endTime)){
+                sList.add(supplierInfor);
+            } else if(supplierInfor.getExpiration()==null&&!StringUtil.isNotEmpty(beginTime)&&!StringUtil.isNotEmpty(endTime)){
+                sList.add(supplierInfor);
             }
-        } else {
-            fList = list;
+        }
+
+        for (SupplierInfor supplierInfor : sList) {
+            if (StringUtil.isNotEmpty(status)) {
+                if (Integer.parseInt(status) == supplierInfor.getStatus()) {
+                    mList.add(supplierInfor);
+                }
+            }else {
+                mList.add(supplierInfor);
+            }
+        }
+
+        for(SupplierInfor supplierInfor : mList){
+            if(StringUtil.isNotEmpty(sponsorName)){
+                if(supplierInfor.getSponsor().getPerson().getPersonName().contains(sponsorName)){
+                    nList.add(supplierInfor);
+                }
+            }else {
+                nList.add(supplierInfor);
+            }
+        }
+
+        for(SupplierInfor supplierInfor : nList){
+            if(StringUtil.isNotEmpty(supplierName)){
+                if(supplierInfor.getSupplierName().contains(supplierName)){
+                    pList.add(supplierInfor);
+                }
+            }else {
+                pList.add(supplierInfor);
+            }
+        }
+
+        for (SupplierInfor supplierInfor : pList){
+            if (StringUtil.isNotEmpty(serviceDetail)) {
+                if (supplierInfor.getServiceDetail().contains(serviceDetail)) {
+                    tList.add(supplierInfor);
+                }
+            } else {
+                tList.add(supplierInfor);
+            }
+        }
+        for (SupplierInfor supplierInfor : tList){
+            if (StringUtil.isNotEmpty(single)) {
+                boolean a = supplierInfor.isSingle() && "1".equals(single);
+                boolean b = !supplierInfor.isSingle() && "0".equals(single);
+                if (a||b) {
+                    gList.add(supplierInfor);
+                }
+            } else {
+                gList.add(supplierInfor);
+            }
         }
 
         // 把查询到的结果转化为VO
-        List supplierVos = new ArrayList();
-        if (fList.size() > 0) {
-            for (Iterator it = fList.iterator(); it.hasNext(); ) {
+        List<SupplierVO> supplierVos = new ArrayList();
+        if (gList.size() > 0)
+
+        {
+            for (Iterator it = gList.iterator(); it.hasNext(); ) {
                 SupplierInfor supplierInfor = (SupplierInfor) it.next();
                 SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
                 supplierVos.add(supplierVO);
             }
         }
+
         //定义返回的数据类型：json，使用了json-lib
         JSONObject jsonObj = new JSONObject();
         //定义rows，存放数据
         JSONArray rows = new JSONArray();
-        jsonObj.put("page", pl.getPages().getCurrPage());   //当前页(名称必须为page)
-        jsonObj.put("total", pl.getPages().getTotalPage()); //总页数(名称必须为total)
-        jsonObj.put("records", pl.getPages().getTotals());    //总记录数(名称必须为records)
-
-
+        //当前页(名称必须为page)
+        jsonObj.put("page", pl.getPages().getCurrPage());
+        //总页数(名称必须为total)
+        jsonObj.put("total", pl.getPages().getTotalPage());
+        //总记录数(名称必须为records)
+        jsonObj.put("records", pl.getPages().getTotals());
         JSONConvert convert = new JSONConvert();
         rows = convert.modelCollect2JSONArray(supplierVos, new ArrayList());
-        jsonObj.put("rows", rows);                            //返回到前台每页显示的数据(名称必须为rows)
+        //返回到前台每页显示的数据(名称必须为rows)
+        jsonObj.put("rows", rows);
         //设置字符编码
         response.setContentType(CoreConstant.CONTENT_TYPE);
         response.getWriter().print(jsonObj);
@@ -120,20 +213,140 @@ public class SupplierController extends BasicController {
     }
 
     @RequestMapping(params = "method=save")
-    public String save(HttpServletRequest request, HttpServletResponse response, SupplierVO supplierVO) throws Exception {
+    public String save(HttpServletRequest request, HttpServletResponse response, SupplierDTO supplierDTO, DefaultMultipartHttpServletRequest multipartRequest) throws Exception {
+        SupplierInfor supplierInfor;
+        if (supplierDTO.getSupplierID() != null && !"".equals(supplierDTO.getSupplierID())) {
+            supplierInfor = (SupplierInfor) this.supplierInforManager.get(supplierDTO.getSupplierID());
+        } else {
+            supplierInfor = new SupplierInfor();
+            supplierInfor.setStatus(SupplierStatusEnum.PENDING_REVIEW.getCode());
+            supplierInfor.setValid(true);
+            SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
+            supplierInfor.setSponsor(systemUser);
+            Calendar cal = Calendar.getInstance();
+            Date date = cal.getTime();
+            supplierInfor.setStartDate(date);
+        }
+        BeanUtils.copyProperties(supplierDTO, supplierInfor);
+        supplierInfor.setPurchaseType(EnumUtil.getByMsg(supplierDTO.getPurchaseTypeMsg(), PurchaseTypeEnum.class).getCode());
+        supplierInfor.setPassISO("是".equals(supplierDTO.getPass()));
+        supplierInfor.setSingle("是".equals(supplierDTO.getSingleOne()));
+        String attachments = this.uploadAttachment(multipartRequest, "supplier");
+        String[] attachs = cutOffattach(attachments);
+        int attNum = 0;
+        Set<OrganizeInfor> organizeInfors = new HashSet<>();
+        Integer[] organizeIds = supplierDTO.getOrganizeIds();
+        if (organizeIds != null) {
+            for (int i = 0; i < organizeIds.length; i++) {
+                OrganizeInfor organizeInfor = (OrganizeInfor) organizeManager.get(organizeIds[i]);
+                organizeInfors.add(organizeInfor);
+            }
+        }
+        supplierInfor.setOrganizes(organizeInfors);
+        List<Qualification> qualifications = supplierInfor.getQualifications();
+        if (supplierDTO.getQualificationCode1() != null) {
+            Qualification qualification = new Qualification();
+            qualification.setEndTime(supplierDTO.getEndTime1());
+            qualification.setQualificationCode(supplierDTO.getQualificationCode1());
+            qualification.setQualificationName(supplierDTO.getQualificationName1());
+            qualification.setSupplierInfor(supplierInfor);
+            if (StringUtil.isNotEmpty(supplierDTO.getQuav1()) && attNum < attachs.length) {
+                qualification.setQualificationAttach(attachs[attNum]);
+                attNum++;
+            }
 
-        SupplierInfor supplierInfor = new SupplierInfor();
-
-        BeanUtils.copyProperties(supplierInfor, supplierVO);
-        Calendar cal = Calendar.getInstance();
-        Date date = cal.getTime();
-        supplierInfor.setPurchaseType(EnumUtil.getByMsg(supplierVO.getPurchaseTypeMsg(), PurchaseTypeEnum.class).getCode());
-        supplierInfor.setSingleSupplier(supplierVO.getSingle().equals("是") ? true : false);
-        supplierInfor.setStatus(SupplierStatusEnum.PENDING_REVIEW.getCode());
-        supplierInfor.setValid(true);
-        SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
-        supplierInfor.setSponsor(systemUser);
-        supplierInfor.setStartDate(date);
+            qualifications.add(qualification);
+        }
+        if (supplierDTO.getQualificationCode2() != null) {
+            Qualification qualification = new Qualification();
+            qualification.setEndTime(supplierDTO.getEndTime2());
+            qualification.setQualificationCode(supplierDTO.getQualificationCode2());
+            qualification.setQualificationName(supplierDTO.getQualificationName2());
+            qualification.setSupplierInfor(supplierInfor);
+            if (StringUtil.isNotEmpty(supplierDTO.getQuav2()) && attNum < attachs.length) {
+                qualification.setQualificationAttach(attachs[attNum]);
+                attNum++;
+            }
+            qualifications.add(qualification);
+        }
+        if (supplierDTO.getQualificationCode3() != null) {
+            Qualification qualification = new Qualification();
+            qualification.setEndTime(supplierDTO.getEndTime3());
+            qualification.setQualificationCode(supplierDTO.getQualificationCode3());
+            qualification.setQualificationName(supplierDTO.getQualificationName3());
+            qualification.setSupplierInfor(supplierInfor);
+            if (StringUtil.isNotEmpty(supplierDTO.getQuav3()) && attNum < attachs.length) {
+                qualification.setQualificationAttach(attachs[attNum]);
+                attNum++;
+            }
+            qualifications.add(qualification);
+        }
+        if (supplierDTO.getQualificationCode4() != null) {
+            Qualification qualification = new Qualification();
+            qualification.setEndTime(supplierDTO.getEndTime4());
+            qualification.setQualificationCode(supplierDTO.getQualificationCode4());
+            qualification.setQualificationName(supplierDTO.getQualificationName4());
+            qualification.setSupplierInfor(supplierInfor);
+            if (StringUtil.isNotEmpty(supplierDTO.getQuav4()) && attNum < attachs.length) {
+                qualification.setQualificationAttach(attachs[attNum]);
+                attNum++;
+            }
+            qualification.setQualificationAttach(supplierDTO.getQuav4());
+            qualifications.add(qualification);
+        }
+        if (supplierDTO.getQualificationCode5() != null) {
+            Qualification qualification = new Qualification();
+            qualification.setEndTime(supplierDTO.getEndTime5());
+            qualification.setQualificationCode(supplierDTO.getQualificationCode5());
+            qualification.setQualificationName(supplierDTO.getQualificationName5());
+            qualification.setSupplierInfor(supplierInfor);
+            if (StringUtil.isNotEmpty(supplierDTO.getQuav5()) && attNum < attachs.length) {
+                qualification.setQualificationAttach(attachs[attNum]);
+                attNum++;
+            }
+            qualifications.add(qualification);
+        }
+        List<BackGround> backGrounds = supplierInfor.getBackGrounds();
+        if (supplierDTO.getBackCode1() != null) {
+            BackGround backGround = new BackGround();
+            backGround.setBackCode(supplierDTO.getBackCode1());
+            backGround.setClientName(supplierDTO.getClientName1());
+            backGround.setServiceContent(supplierDTO.getServiceContent1());
+            backGround.setSupplierInfor(supplierInfor);
+            backGrounds.add(backGround);
+        }
+        if (supplierDTO.getBackCode2() != null) {
+            BackGround backGround = new BackGround();
+            backGround.setBackCode(supplierDTO.getBackCode2());
+            backGround.setClientName(supplierDTO.getClientName2());
+            backGround.setServiceContent(supplierDTO.getServiceContent2());
+            backGround.setSupplierInfor(supplierInfor);
+            backGrounds.add(backGround);
+        }
+        if (supplierDTO.getBackCode3() != null) {
+            BackGround backGround = new BackGround();
+            backGround.setBackCode(supplierDTO.getBackCode3());
+            backGround.setClientName(supplierDTO.getClientName3());
+            backGround.setServiceContent(supplierDTO.getServiceContent3());
+            backGround.setSupplierInfor(supplierInfor);
+            backGrounds.add(backGround);
+        }
+        if (supplierDTO.getBackCode4() != null) {
+            BackGround backGround = new BackGround();
+            backGround.setBackCode(supplierDTO.getBackCode4());
+            backGround.setClientName(supplierDTO.getClientName4());
+            backGround.setServiceContent(supplierDTO.getServiceContent4());
+            backGround.setSupplierInfor(supplierInfor);
+            backGrounds.add(backGround);
+        }
+        if (supplierDTO.getBackCode5() != null) {
+            BackGround backGround = new BackGround();
+            backGround.setBackCode(supplierDTO.getBackCode5());
+            backGround.setClientName(supplierDTO.getClientName5());
+            backGround.setServiceContent(supplierDTO.getServiceContent5());
+            backGround.setSupplierInfor(supplierInfor);
+            backGrounds.add(backGround);
+        }
         this.supplierInforManager.save(supplierInfor);
         return "/core/success";
     }
@@ -142,15 +355,10 @@ public class SupplierController extends BasicController {
     public String saveEdit(HttpServletRequest request, HttpServletResponse response, SupplierVO supplierVO) throws Exception {
 
         SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(supplierVO.getSupplierID());
+        BeanUtils.copyProperties(supplierVO, supplierInfor);
         supplierInfor.setPurchaseType(EnumUtil.getByMsg(supplierVO.getPurchaseTypeMsg(), PurchaseTypeEnum.class).getCode());
-        supplierInfor.setSingleSupplier(supplierVO.getSingle().equals("是") ? true : false);
-        supplierInfor.setSupplierName(supplierVO.getSupplierName());
-        supplierInfor.setServiceDetail(supplierVO.getServiceDetail());
-        supplierInfor.setServiceYear(supplierVO.getServiceYear());
-        supplierInfor.setSupplierContact(supplierVO.getSupplierContact());
-        supplierInfor.setSupplierAddress(supplierVO.getSupplierAddress());
+        supplierInfor.setPassISO(supplierVO.getPass().equals("是") ? true : false);
         SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
-//        supplierInfor.setSponsor(systemUser);
         this.supplierInforManager.save(supplierInfor);
         return "/core/success";
     }
@@ -161,7 +369,7 @@ public class SupplierController extends BasicController {
         SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
         boolean canAdd = false;
         boolean canDelete = false;
-        if (this.roleManager.belongRole(systemUser, roleInfor)||systemUser.getUserName().equals("admin")) {
+        if (this.roleManager.belongRole(systemUser, roleInfor) || systemUser.getUserName().equals("admin")) {
             canAdd = true;
         }
         if (this.roleManager.belongRole(systemUser, roleInfor) || systemUser.getUserName().equals("admin")) {
@@ -189,13 +397,18 @@ public class SupplierController extends BasicController {
     //新增或者修改角色信息
     @RequestMapping(params = "method=edit")
     public String edit(HttpServletRequest request, Model model) throws Exception {
+        String gkHql="from OrganizeInfor where guikou='是'";
+        List departments = this.organizeManager.getResultByQueryString(gkHql);
+        model.addAttribute("_ALL_GuiKou", departments);
         String supplierID = request.getParameter("supplierID");
         if (StringUtil.isNotEmpty(supplierID)) {
             SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(Integer.parseInt(supplierID));
             SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
             model.addAttribute("supplier", supplierVO);
+            return "supplier/modifyInfor";
+        }else{
+            return "supplier/addInfor";
         }
-        return "supplier/modifyInfor";
     }
 
 
@@ -218,24 +431,24 @@ public class SupplierController extends BasicController {
         String supplierID = request.getParameter("supplierID");
         if (StringUtil.isNotEmpty(supplierID)) {
             SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(Integer.parseInt(supplierID));
-            if(supplierInfor.getCertifyInfos()!=null&&supplierInfor.getCertifyInfos().size()>0){
+            if (supplierInfor.getCertifyInfos() != null && supplierInfor.getCertifyInfos().size() > 0) {
                 CertifyInfo certifyInfo = supplierInfor.getCertifyInfos().get(supplierInfor.getCertifyInfos().size() - 1);
                 model.addAttribute("certify", certifyInfo);
             }
             SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
             List<SupplierCheckVO> checkVOS = supplierVO.getCheckVOS();
-            int i=0;
-            int j=0;
-            for(SupplierCheckVO checkVO:checkVOS){
-                if(checkVO.getLayer()==2&&checkVO.isLastOne()){
+            int i = 0;
+            int j = 0;
+            for (SupplierCheckVO checkVO : checkVOS) {
+                if (checkVO.getLayer() == 2 && checkVO.isLastOne()) {
                     i++;
                 }
-                if(checkVO.getLayer()==1&&checkVO.isLastOne()){
+                if (checkVO.getLayer() == 1 && checkVO.isLastOne()) {
                     j++;
                 }
             }
-            model.addAttribute("lv_1",j);
-            model.addAttribute("rows",i);
+            model.addAttribute("lv_1", j);
+            model.addAttribute("rows", i);
             model.addAttribute("supplier", supplierVO);
         }
         return "supplier/editCheck";
@@ -268,16 +481,16 @@ public class SupplierController extends BasicController {
     public String saveCertify(HttpServletRequest request, CertifyVO vo) throws Exception {
         CertifyInfo certifyInfo = new CertifyInfo();
         SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
-        BeanUtils.copyProperties(certifyInfo, vo);
-        certifyInfo.setEndDate(Convert.StrToDate(vo.getEndTime()+" 23:59:59","yyyy-MM-dd HH:mm:ss"));
+        BeanUtils.copyProperties(vo, certifyInfo);
+        certifyInfo.setEndDate(Convert.StrToDate(vo.getEndTime() + " 23:59:59", "yyyy-MM-dd HH:mm:ss"));
         certifyInfo.setSponsor(systemUser);
         certifyInfo.setSpoDate(new Date());
         SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(vo.getSupplierID());
         supplierInfor.setStatus(SupplierStatusEnum.CERTIFYING.getCode());
         certifyInfo.setSupplierInfor(supplierInfor);
         List<SupplierCheckInfor> checkInfors = supplierInfor.getCheckInfors();
-        for(SupplierCheckInfor checkInfor:checkInfors){
-            if(checkInfor.getLayer()==2||checkInfor.getLayer()==3){
+        for (SupplierCheckInfor checkInfor : checkInfors) {
+            if (checkInfor.getLayer() == 2 || checkInfor.getLayer() == 3) {
                 checkInfor.setLastOne(false);
                 supplierInfor.setExpiration(null);
             }
@@ -300,14 +513,15 @@ public class SupplierController extends BasicController {
     }
 
     @RequestMapping(params = "method=validName")
-    public void validName(HttpServletRequest request,HttpServletResponse response)throws Exception{
+    public void validName(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String supplierName = request.getParameter("supplierName");
         boolean valid = this.supplierInforManager.validName(supplierName);
         JSONObject jsonObj = new JSONObject();
-            jsonObj.put("_Valid", valid);
-            response.setContentType(CoreConstant.CONTENT_TYPE);
-            response.getWriter().print(jsonObj);
+        jsonObj.put("_Valid", valid);
+        response.setContentType(CoreConstant.CONTENT_TYPE);
+        response.getWriter().print(jsonObj);
     }
+
     @RequestMapping(params = "method=view")
     public String view(HttpServletRequest request, Model model) throws Exception {
         String supplierID = request.getParameter("supplierID");
@@ -315,18 +529,18 @@ public class SupplierController extends BasicController {
             SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(Integer.parseInt(supplierID));
             SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
             List<SupplierCheckVO> checkVOS = supplierVO.getCheckVOS();
-            int i=0;
-            int j=0;
-            for(SupplierCheckVO checkVO:checkVOS){
-                if(checkVO.getLayer()==2){
+            int i = 0;
+            int j = 0;
+            for (SupplierCheckVO checkVO : checkVOS) {
+                if (checkVO.getLayer() == 2) {
                     i++;
                 }
-                if(checkVO.getLayer()==1){
+                if (checkVO.getLayer() == 1) {
                     j++;
                 }
             }
-            model.addAttribute("lv_1",j);
-            model.addAttribute("rows",i);
+            model.addAttribute("lv_1", j);
+            model.addAttribute("rows", i);
             SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
             model.addAttribute("supplier", supplierVO);
 
@@ -353,7 +567,7 @@ public class SupplierController extends BasicController {
             }
             if (supplierInfor.getStatus() == 2) {
                 for (SupplierCheckInfor supplierCheckInfor : supplierInfor.getCheckInfors()) {
-                    if (supplierCheckInfor.getChecker().getPersonId().equals(systemUser.getPersonId()) && supplierCheckInfor.getCheckResult() == null && supplierCheckInfor.getLayer() == 2&&supplierCheckInfor.isLastOne()) {
+                    if (supplierCheckInfor.getChecker().getPersonId().equals(systemUser.getPersonId()) && supplierCheckInfor.getCheckResult() == null && supplierCheckInfor.getLayer() == 2 && supplierCheckInfor.isLastOne()) {
                         canCetify = true;
                         break;
                     }
@@ -373,7 +587,9 @@ public class SupplierController extends BasicController {
     @RequestMapping(params = "method=check")
     public String check(HttpServletRequest request, SupplierCheckVO checkVO) throws Exception {
         Object obj = session.getAttribute(SESSION_ORDER_TOKEN);//获得令牌
-        if (obj == null) return "cggl";
+        if (obj == null) {
+            return "cggl";
+        }
         //移除令牌  无论成功还是失败
         session.removeAttribute(SESSION_ORDER_TOKEN);
         SystemUserInfor systemUser = SysCommonMethod.getSystemUser(request);
@@ -393,7 +609,7 @@ public class SupplierController extends BasicController {
                             supplierCheckInfor.setLayer(1);
                             supplierInfor.setStatus(1);
                             supplierCheckInfor.setLastOne(true);
-                        }else{
+                        } else {
                             supplierCheckInfor.setLayer(1);
                             supplierCheckInfor.setLastOne(true);
                         }
@@ -419,7 +635,7 @@ public class SupplierController extends BasicController {
             supplierCheckInfor.setChecker(systemUser);
             supplierCheckInfor.setCheckResult(checkVO.getCheckResult());
             supplierCheckInfor.setCheckOpinion(checkVO.getCheckOpinion());
-            supplierCheckInfor.setCheckTime(Convert.StrToDate(checkVO.getCheckDate(),"yyyy-MM-dd HH:mm:ss"));
+            supplierCheckInfor.setCheckTime(Convert.StrToDate(checkVO.getCheckDate(), "yyyy-MM-dd HH:mm:ss"));
             supplierCheckInfor.setSupplierInfor(supplierInfor);
             supplierInfor.getCheckInfors().add(supplierCheckInfor);
             this.supplierInforManager.save(supplierInfor);
@@ -439,11 +655,11 @@ public class SupplierController extends BasicController {
             SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(supplierID);
             SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
             for (SupplierCheckInfor checkInfor : supplierInfor.getCheckInfors()) {
-                if (checkInfor.getChecker().getPersonId().equals(systemUser.getPersonId()) && checkInfor.getLayer() == 2&&checkInfor.isLastOne()) {
+                if (checkInfor.getChecker().getPersonId().equals(systemUser.getPersonId()) && checkInfor.getLayer() == 2 && checkInfor.isLastOne()) {
                     checkInfor.setChecker(systemUser);
                     checkInfor.setCheckResult(checkVO.getCheckResult());
                     checkInfor.setCheckOpinion(checkVO.getCheckOpinion());
-                    checkInfor.setCheckTime(Convert.StrToDate(checkVO.getCheckDate(),"yyyy-MM-dd"));
+                    checkInfor.setCheckTime(Convert.StrToDate(checkVO.getCheckDate(), "yyyy-MM-dd"));
                 }
             }
 
@@ -452,11 +668,11 @@ public class SupplierController extends BasicController {
             }
             int i = 0;
             for (SupplierCheckInfor checkInfor : supplierInfor.getCheckInfors()) {
-                if (checkInfor.getCheckResult() != null && checkInfor.getCheckResult() == 1&&checkInfor.isLastOne()) {
+                if (checkInfor.getCheckResult() != null && checkInfor.getCheckResult() == 1 && checkInfor.isLastOne()) {
                     i++;
                 }
             }
-            if (i ==supplierVO.getCheckVOS().size()) {
+            if (i == supplierVO.getCheckVOS().size()) {
                 supplierInfor.setStatus(SupplierStatusEnum.LEADCHECK.getCode());
             }
             this.supplierInforManager.save(supplierInfor);
@@ -473,25 +689,24 @@ public class SupplierController extends BasicController {
             SupplierInfor supplierInfor = (SupplierInfor) this.supplierInforManager.get(Integer.parseInt(supplierID));
             SupplierVO supplierVO = this.supplierInforManager.transPOToVO(supplierInfor);
             List<SupplierCheckVO> checkVOS = supplierVO.getCheckVOS();
-            int i=0;
-            int j=0;
-            for(SupplierCheckVO checkVO:checkVOS){
-                if(checkVO.getLayer()==2&&checkVO.isLastOne()){
+            int i = 0;
+            int j = 0;
+            for (SupplierCheckVO checkVO : checkVOS) {
+                if (checkVO.getLayer() == 2 && checkVO.isLastOne()) {
                     i++;
                 }
-                if(checkVO.getLayer()==1&&checkVO.isLastOne()){
+                if (checkVO.getLayer() == 1 && checkVO.isLastOne()) {
                     j++;
                 }
             }
-            model.addAttribute("lv_1",j);
-            model.addAttribute("rows",i);
+            model.addAttribute("lv_1", j);
+            model.addAttribute("rows", i);
             model.addAttribute("supplier", supplierVO);
             CertifyInfo certifyInfo = supplierInfor.getCertifyInfos().get(supplierInfor.getCertifyInfos().size() - 1);
             model.addAttribute("certify", certifyInfo);
         }
         return "supplier/editCertify";
     }
-
 
     /**
      * 导出excel
@@ -507,7 +722,11 @@ public class SupplierController extends BasicController {
             String[] queryString = new String[2];
             queryString[0] = "from SupplierInfor supplier where 1=1 and valid=1";
             queryString[1] = "select count(supplierID) from SupplierInfor supplier where 1=1 and valid=1";
-            queryString = this.supplierInforManager.generateQueryString(queryString, getSearchParams(request));
+            String[] params=getSearchParams(request);
+            String param = params[3];
+            String decode = URLDecoder.decode(param, "utf-8");
+            params[3]=decode;
+            queryString = this.supplierInforManager.generateQueryString(queryString, params);
             String page = request.getParameter("page");        //当前页
             String rowsNum = request.getParameter("rows");    //每页显示的行数
             Pages pages = new Pages(request);
@@ -532,11 +751,11 @@ public class SupplierController extends BasicController {
 
             rowName.add("序号");
             rowName.add("供应商名称");
-            rowName.add("联系电话");
+            rowName.add("联系方式");
             rowName.add("服务明细");
-            rowName.add("服务时间");
+            rowName.add("公司性质");
             rowName.add("采购类型");
-            rowName.add("单一供方");
+            rowName.add("质量认证");
             rowName.add("状态");
             rowName.add("有效期");
 
@@ -545,11 +764,11 @@ public class SupplierController extends BasicController {
                 SupplierVO tmpVo = this.supplierInforManager.transPOToVO(infor);
                 data[0][i] = String.valueOf(i + 1);
                 data[1][i] = tmpVo.getSupplierName();
-                data[2][i] = tmpVo.getSupplierContact();
+                data[2][i] = tmpVo.getSupplierTel();
                 data[3][i] = tmpVo.getServiceDetail();
-                data[4][i] = tmpVo.getServiceYear();
+                data[4][i] = tmpVo.getCompanyType();
                 data[5][i] = tmpVo.getPurchaseTypeMsg();
-                data[6][i] = tmpVo.getSingle();
+                data[6][i] = tmpVo.getPass();
                 data[7][i] = tmpVo.getSupplierStatus();
                 data[8][i] = tmpVo.getExpirationTime();
             }
@@ -595,12 +814,12 @@ public class SupplierController extends BasicController {
                 suppliers1 = this.supplierInforManager.getResultByQueryString(queryHQL);
             }
             Iterator<SupplierInfor> it = suppliers1.iterator();
-            while(it.hasNext()){
+            while (it.hasNext()) {
                 SupplierInfor supplierInfor = it.next();
-                if(supplierInfor.getStatus()==0){
+                if (supplierInfor.getStatus() == 0) {
                     List<SupplierCheckInfor> checkInfors = supplierInfor.getCheckInfors();
-                    for(SupplierCheckInfor checkInfor:checkInfors){
-                        if(checkInfor.getChecker().getPersonId().intValue()==systemUser.getPersonId().intValue()){
+                    for (SupplierCheckInfor checkInfor : checkInfors) {
+                        if (checkInfor.getChecker().getPersonId().intValue() == systemUser.getPersonId().intValue()) {
                             it.remove();
                         }
                     }
@@ -613,12 +832,12 @@ public class SupplierController extends BasicController {
             String checkHql = "from SupplierCheckInfor where lastOne=1 and checkResult is null  and checker.personId=" + personId;
             List<SupplierInfor> suppliers2 = this.supplierInforManager.getResultByQueryString(query1);
             Iterator<SupplierInfor> it2 = suppliers2.iterator();
-            while(it2.hasNext()){
+            while (it2.hasNext()) {
                 SupplierInfor supplierInfor = it2.next();
-                if(supplierInfor.getStatus()==0){
+                if (supplierInfor.getStatus() == 0) {
                     List<SupplierCheckInfor> checkInfors = supplierInfor.getCheckInfors();
-                    for(SupplierCheckInfor checkInfor:checkInfors){
-                        if(checkInfor.getChecker().getPersonId().intValue()==systemUser.getPersonId().intValue()){
+                    for (SupplierCheckInfor checkInfor : checkInfors) {
+                        if (checkInfor.getChecker().getPersonId().intValue() == systemUser.getPersonId().intValue()) {
                             it2.remove();
                         }
                     }

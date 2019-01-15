@@ -84,7 +84,7 @@
 							<td class="ui-state-default jqgrid-rownum" style="width: 15%">审核内容：</td>
 							<td>
 								<input type="hidden" name="status" value="1" />
-								<input type="radio" name="caigou" value="0" id="ty"  /><label for="ty">直接采购</label>&nbsp;&nbsp;&nbsp;
+								<input type="radio" name="caigou" value="0" id="ty" checked /><label for="ty">直接采购</label>&nbsp;&nbsp;&nbsp;
 								<input type="radio" name="caigou" value="1" id="ty"  /><label for="ty">三方比价</label>&nbsp;&nbsp;&nbsp;
 								<input type="radio" name="caigou" value="2" id="ty"  /><label for="ty">招投标</label>&nbsp;&nbsp;&nbsp;
 								<%--<input type="radio" name="caigou" value="3" id="ty"  /><label for="ty">合同变更</label><br/><br/>--%>

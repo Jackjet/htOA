@@ -3,11 +3,12 @@
 <%@ page import="com.kwchina.core.base.entity.RoleInfor" %>
 <%@ page import="com.kwchina.core.base.service.RoleManager" %>
 <%@ page import="org.springframework.beans.factory.annotation.Autowired" %>
-<%@ page contentType="text/html; charset=utf-8" %>
+<%@ page contentType="text/html;charset=utf-8" %>
 <%@ include file="/inc/taglibs.jsp" %>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1"/>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <script src="/datePicker/WdatePicker.js" type="text/javascript"></script>
 <script src="/components/jquery-1.4.2.js" type="text/javascript"></script>
 <!--jquery包-->
@@ -26,7 +27,7 @@
 <!--加载模态多条件查询相关js-->
 <script src="/js/changeclass.js"></script>
 <!--导出excel -->
-<script type='text/javascript' src=../js/expertToExcel.js></script>
+<%--<script type='text/javascript' src="/js/expertToExcel.js"></script>--%>
 <%--<link rel="stylesheet" type="text/css" media="screen" href="<c:url value="/"/>components/jqgrid/css/jquery-ui-1.7.2.custom.css" />--%>
 <link rel="stylesheet" type="text/css" media="screen" href="/css/base/jquery-ui-1.9.2.custom.css"/>
 <link rel="stylesheet" type="text/css" media="screen" href="/components/jqgrid/css/ui.jqgrid.css"/>
@@ -56,13 +57,8 @@
 
     // 添加监听器，在title里显示状态变化
     document.addEventListener(visibilityChange, function() {
-        //document.title = document[state];
         if(document.hidden){
-
-//            document.title = '隐藏本页';
         }else{
-//            document.title ='显示本页';
-//            alert(111);
             window.location.reload();
         }
     }, false);
@@ -103,15 +99,13 @@
 </div>
 <!-- 查询框 -->
 <div id="multiSearchDialog" style="display: none;">
-    <table>
+    <table style="width:600px;">
         <tbody>
-        <tr>
-            <td>
-                <input type="hidden" class="searchField" value="status"/>状态：
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">供应商状态：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input type="hidden" class="searchField" value="status"/>
                 <input type="hidden" class="searchOper" value="eq"/>
-            </td>
-            <td style="text-align: center">
-                <label>供应商状态：</label>
                 <select id="status" class="searchString">
                     <option value="">--全部--</option>
                     <option value=0>待审核</option>
@@ -123,6 +117,47 @@
                 </select>
             </td>
         </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">单一供方：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input type="hidden" class="searchField" value="single"/>
+                <input type="hidden" class="searchOper" value="eq"/>
+                <select id="single" class="searchString">
+                    <option value="">--全部--</option>
+                    <option value=1>是</option>
+                    <option value=0>否</option>
+                </select>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">供应商名称：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input type="hidden" class="searchField" value="supplierName"/>
+                <input type="hidden" class="searchOper" value="cn"/>
+                <input id="supplierName" class="searchString"/>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">发起人：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input id="sponsorName"/>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">有效期：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input id="beginTime" class="Wdate" onfocus="WdatePicker({skin:'whyGreen'})"/>至<input id="endTime" class="Wdate" onfocus="WdatePicker({skin:'whyGreen'})"/>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td style="width: 15%">服务明细：</td>
+            <td style="padding-top: 5px;padding-bottom: 5px;">
+                <input type="hidden" class="searchField" value="serviceDetail"/>
+                <input type="hidden" class="searchOper" value="cn"/>
+                <input id="serviceDetail" class="searchString"/>
+            </td>
+        </tr>
+
         </tbody>
     </table>
 </div>
@@ -135,28 +170,25 @@
             datatype: "json",
             autowidth: true,
             height: document.documentElement.clientHeight - 140,
-            colNames: ['Id', '供方名称', '联系电话', '服务明细', '服务时间', '采购类型', '单一供方', '状态', '有效期', '发起人','相关操作'],
+            colNames: ['Id', '供方名称', '联系方式', '服务明细', '公司性质', '采购类型', '质量认证', '状态', '有效期', '发起人','相关操作'],
             colModel: [
-                {name: 'supplierID', index: 'bidInfoId', width: 0, align: 'center', hidden: true},
+                {name: 'supplierID', index: 'supplierID', width: 0, align: 'center', hidden: true},
                 {name: 'supplierName', index: 'supplierName', width: 150, align: 'center', formatter: formatTitle},
-                {name: 'supplierContact', index: 'supplierContact', width: 100, align: 'center'},
+                {name: 'supplierTel', index: 'supplierContact', width: 100, align: 'center'},
                 {name: 'serviceDetail', index: 'serviceDetail', width: 100, align: 'center'},
-                {name: 'serviceYear', index: 'serviceYear', width: 80, align: 'center'},
-                {name: 'purchaseTypeMsg', index: 'purchaseTypeMsg', width: 100, align: 'center'},
-                {name: 'single', index: 'single', width: 80, align: 'center'},
-                {name: 'supplierStatus', index: 'supplierStatus', width: 100, align: 'center', formatter: formatStatus},
-                {name: 'expirationTime', index: 'expirationTime', width: 100, align: 'center'},
-                {name: 'sponsorName', index: 'sponsorName', width: 80, align: 'center'},
+                {name: 'companyType', index: 'companyType', width: 80, align: 'center'},
+                {name: 'purchaseTypeMsg', index: 'purchaseType', width: 100, align: 'center'},
+                {name: 'pass', index: 'passISO', width: 80, align: 'center'},
+                {name: 'supplierStatus', index: 'status', width: 100, align: 'center', formatter: formatStatus},
+                {name: 'expirationTime', index: 'expiration', width: 100, align: 'center'},
+                {name: 'sponsorName', index: 'sponsorId', width: 80, align: 'center'},
                 {name: 'fixed', width: 100, align: 'center', search: false, sortable: false, formatter: formatOperation}
             ],
             sortorder: 'desc',
             multiselect: true,	//是否支持多选,可用于批量删除
             viewrecords: true,
-//            autoWidth:true,
-//            shrinkToFit: false,
-//            autoScroll: true,
-            rowNum: 10,
-            rowList: [10, 20, 30],
+            rowNum: 1000,
+            rowList: [10,100,1000,10000],
             jsonReader: {
                 repeatitems: false
             },
@@ -209,7 +241,7 @@
         if(rowObject.supplierStatus !='审核未通过' && (rowObject.sponsorName =='${_GLOBAL_PERSON.personName}'||'${_GLOBAL_PERSON.personName}'=='系统管理员')){
             returnStr += "<a href='javascript:;' onclick='editInfo(" + rowObject.supplierID + ")'>[修改]</a>";
         }else{
-            returnStr+="<a href='javascript:;' onclick='viewInfo(" + rowObject.supplierID + ")'>[查看]</a>";
+            returnStr+="<a href='javascript:;' onclick='doView(" + rowObject.supplierID + ")'>[查看]</a>";
         }
         if(deleteSupplier() && (rowObject.sponsorName =='${_GLOBAL_PERSON.personName}'||'${_GLOBAL_PERSON.personName}'=='系统管理员')){
             returnStr += "<a href='javascript:;' onclick='deleteInfo(" + rowObject.supplierID + ")'>[删除]</a>";
@@ -248,9 +280,9 @@
     //新增
     function addInfor() {
         if(addSupplier()){
-            window.open("addInfor.jsp", "_blank");
+            window.open("/supplier.do?method=edit","_blank");
         }else{
-         alert("您没有新增权限！");
+            alert("您没有新增权限！");
         }
     }
     //初始化列表和查询窗口Id
@@ -262,7 +294,6 @@
     function openMultipleSearchDialogLog() {
         //初始化窗口
         initSearchDialogLog();
-
         $(multiSearchParamsLog[1]).dialog("open");
     }
     /** 自定义多条件查询 */
@@ -272,19 +303,27 @@
             autoOpen: false,
             modal: true,
             resizable: true,
-            width: 350,
-            title: "状态查询",
+            width: 500,
+            height:400,
+            title: "查询",
             buttons: {
-                "查询": gridReload,
+                "查询": gridReload
             }
         });
     }
 
     //筛选
     function gridReload() {
-        var status = jQuery("#status").val() || "";
-        jQuery("#list").jqGrid('setGridParam', {
-            url: "/supplier.do?method=supplierList&status=" + status,
+        var status = $("#status").val() || "";
+        var single = $("#single").val() || "";
+        var supplierName= $("#supplierName").val() || "";
+        var sponsorName = $("#sponsorName").val() || "";
+        var serviceDetail = $("#serviceDetail").val() || "";
+        var beginTime = $("#beginTime").val() || "";
+        var endTime = $("#endTime").val() || "";
+        var url = encodeURI(encodeURI("/supplier.do?method=supplierList&status="+status+"&single="+single+"&supplierName="+supplierName+"&sponsorName="+sponsorName+"&serviceDetail="+serviceDetail+"&beginTime="+beginTime+"&endTime="+endTime));
+        $("#list").jqGrid('setGridParam', {
+            url:url,
             page: 1
         }).trigger("reloadGrid");
         $(multiSearchParamsLog[1]).dialog("close");
@@ -298,19 +337,18 @@
             var searchField = $(".searchField", this).val();    	//(2)获得查询字段
             var searchOper = $(".searchOper", this).val();  		//(3)获得查询方式
             var searchString = $(".searchString", this).val();  	//(4)获得查询值
-
             if (searchField && searchOper && searchString) { 		//(5)如果三者皆有值且长度大于0，则将查询条件加入rules字符串
-                rules += ',{"field":"' + searchField + '","op":"' + searchOper + '","data":"' + searchString + '"}';
+                rules += ',{"field":"' + searchField + '","op":"' + searchOper + '","data":"' + encodeURI(encodeURI(searchString)) +'"}';
             }
         });
         if (rules) {
             rules = rules.substring(1);								//(6)如果rules不为空，且长度大于0，则去掉开头的逗号
         }
-
         var filtersStr = '{"groupOp":"AND","rules":[' + rules + ']}';//(7)串联好filtersStr字符串
-        //alert(filtersStr);
+        alert(filtersStr);
         var url = "/supplier.do?method=expertExcel&_search=true&page=1&rows=1000000&sidx=supplierID&sord=desc&filters=" + filtersStr;
-        window.location.href = url;
+        alert(url);
+        window.location.href =url;
     }
 
 </script>

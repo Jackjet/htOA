@@ -199,7 +199,10 @@
 											<c:forEach items="${layer.checkInfors}" var="checkInfor">
 												<c:if test="${layer.status==1}">
 													<li class="liDetail2"><strong>${checkInfor.checker.person.personName}&nbsp;&nbsp;</strong><font color="aqua">
-														<c:if test="${checkInfor.status == 1}">同意&nbsp;&nbsp;</c:if>
+														<c:if test="${checkInfor.status == 1}">同意&nbsp;&nbsp;
+															<c:if test="${checkInfor.checkComment != null && checkInfor.checkComment != '' && checkInfor.checkComment!= ' '}">
+																${checkInfor.checkComment}
+															</c:if></c:if>
 														<c:if test="${checkInfor.status == 2}">不同意&nbsp;&nbsp;${checkInfor.checkComment}</c:if>
 														<c:if test="${checkInfor.status == 3}">退回&nbsp;&nbsp;${checkInfor.checkComment}</c:if>
 														<c:if test="${!empty checkInfor.endDate}">

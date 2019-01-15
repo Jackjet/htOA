@@ -423,6 +423,20 @@ public class YwPurchaseController extends PurchaseBaseController {
 
 //						obj.put("charger", null);
 //					}
+				String purchaseWay = "";
+				if(fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() < 2){
+					purchaseWay = "";
+				}else if (fi.getPurchaseWay() == 0 && fi.getPurchaseStatus() > 1)	{
+					purchaseWay = "直接采购";
+				}else if (fi.getPurchaseWay() == 1)	{
+					purchaseWay = "三方比价";
+				}else if (fi.getPurchaseWay() == 2)	{
+					purchaseWay = "招投标";
+				}else if (fi.getPurchaseWay() == 3)	{
+					purchaseWay = "合同变更";
+				}
+				obj.put("purchaseWay", purchaseWay);
+
 				String status = "采购结束";
 				if (fi.getPurchaseStatus() == 0) {
 					status = "部门领导审核中";
@@ -1795,7 +1809,7 @@ public class YwPurchaseController extends PurchaseBaseController {
 
 					/*收文表单数据*/
 					SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
-					formDataMap.put("receiveDate", new String[]{sf.format(new java.util.Date())});
+					formDataMap.put("receiveDate", new String[]{sf.format(new Date())});
 					formDataMap.put("documentNo", new String[]{""});
 					formDataMap.put("reportYear", new String[]{publishMap.get("reportYear").toString()});
 					formDataMap.put("serialNo", new String[]{""});

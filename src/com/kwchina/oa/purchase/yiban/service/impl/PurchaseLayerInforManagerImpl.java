@@ -766,7 +766,7 @@ public class PurchaseLayerInforManagerImpl extends BasicManagerImpl<PurchaseLaye
 
 	public void buildStartCheckInfor(PurchaseLayerInfor purchaseLayerInfor, PurchaseNode node){
 
-		Timestamp current = new java.sql.Timestamp(System.currentTimeMillis());
+		Timestamp current = new Timestamp(System.currentTimeMillis());
 		int status = 0;
 
 		RoleInfor role =node.getRoleId();
@@ -787,7 +787,7 @@ public class PurchaseLayerInforManagerImpl extends BasicManagerImpl<PurchaseLaye
 
 	}
 	public void buildCheckInfor(HttpServletRequest request, PurchaseLayerInfor purchaseLayerInfor, PurchaseNode node) {
-		Timestamp current = new java.sql.Timestamp(System.currentTimeMillis());
+		Timestamp current = new Timestamp(System.currentTimeMillis());
 		int status = 0;
 		int checkerType = node.getCheckerType();
 		PurchaseInfor purchase = purchaseLayerInfor.getPurchase();

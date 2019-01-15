@@ -180,7 +180,6 @@ public class RoleController extends BasicController{
 			}
 		}
 		roleInfor.setUsers(users);
-		roleInfor.setUsers(users);	
 		this.roleManager.save(roleInfor);
 		return "success";
 	}

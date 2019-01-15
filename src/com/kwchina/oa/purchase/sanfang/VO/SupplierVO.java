@@ -13,18 +13,27 @@ import java.util.List;
  */
 @Data
 public class SupplierVO {
-    private Integer supplierID;                //供方ID
-    private String supplierName;                //供方名称
-    private String supplierAddress;             //供方地址
-    private String supplierContact;             //联系方式
-    private String serviceDetail;               //服务明细
-    private String serviceYear;                 //服务时长
+    private Integer supplierID;
+    private String supplierName;
+    private String supplierAddress;
+    private String supplierTel;
+    private String contactName;
+    private String supplierContact;
+    private String serviceDetail;
+    private String companyType;
+    private String relevance;
     private String purchaseTypeMsg;
-    private String single;
+    private String pass;
+    private String singleOne;
+    private String serviceYear;
     private String supplierStatus;
-    private String expirationTime;                    //过期时间
-    private String sponsorName;                     //发起人姓名
-    private Integer sponsorId;                  //发起人ID
-    private String startTime;                   //发起时间
+    private String expirationTime;
+    private String sponsorName;
+    private Integer sponsorId;
+    private String startTime;
+    private List<Integer> organizeIDs;
+    private List<String> organizeNames;
     private List<SupplierCheckVO> checkVOS;
+    private List<QualificationVO> qualificationVOS;
+    private List<BackgroundVO> backgroundVOS;
 }

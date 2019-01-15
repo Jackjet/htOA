@@ -124,7 +124,8 @@
 											<font color="red">*</font>
 										</td>
 									</tr>
-									<c:if test="${_Purchase.purchaseNumber != null  && _Purchase.purchaseNumber != ''}">
+									${0==''}
+									<c:if test="${_Purchase.purchaseNumber != 0}">
 									<tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
 										<td class="ui-state-default jqgrid-rownum" style="width: 18%">预计工期：</td>
 										<td>

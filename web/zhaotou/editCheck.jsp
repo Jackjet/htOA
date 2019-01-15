@@ -35,7 +35,7 @@
 <base target="_self"/>
 <body style="overflow-y: auto;padding: 0 100px;bottom: 0">
 <form id="instanceInforForm" name="instanceInforForm" action="/bid.do?method=check" method="post">
-	<input type="hidden" name="bidInfoId" value="${bidInfo.bidInfoId}">
+	<input id="bidInfoId" type="hidden" name="bidInfoId" value="${bidInfo.bidInfoId}">
 	<input type="hidden" name="token" value="${Session.SESSION_ORDER_TOKEN}" >
 	<div class="ui-jqgrid ui-widget ui-widget-content ui-corner-all" id="gbox_grid_35" dir="ltr" style="width: 98%">
 		<div class="ui-jqgrid-view" id="gview_grid_35" style="width: 100%">

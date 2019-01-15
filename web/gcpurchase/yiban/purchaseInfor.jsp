@@ -413,12 +413,13 @@
 
 
 			//获取自定义列
-			var col_names = ['Id', '项目名称', '工程类型','用途','预算类型','创建时间', '申请人', '所属部门','归属公司','能否审核','预计价格'];
+			var col_names = ['Id', '项目名称', '工程类型','用途','预算类型','采购方式','创建时间', '申请人', '所属部门','归属公司','能否审核','预计价格'];
 			var col_model = [{name:'purchaseId',index:'purchaseId', width:0, sorttype:"int", search:false, key:true, hidden:true},
                     {name:'purchaseTitle',index:'purchaseTitle',width:260,align:'center', sortable:true, sorttype:"string", formatter:formatTitle},
                     {name:'guige',index:'guige', width:100, align:'center'},
                     {name:'application',index:'application', width:100, align:'center'},
                     {name:'ysType',index:'ysType', width:60, align:'center'},
+                {name:'purchaseWay',index:'purchaseWay', width:60, align:'center'},
                     {name:'startTime',index:'startTime', width:100, align:'center'},
                     {name:'applier',index:'applier', width:100, align:'center'},
                     {name:'department',index:'department', width:100, align:'center'},

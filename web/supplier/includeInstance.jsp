@@ -7,37 +7,110 @@
     }
 </style>
 <link href="<c:url value="/"/>css/submit.css" type="text/css" rel="stylesheet">
-
 <div>
     <table cellspacing="0" cellpadding="0" border="0" style="width: 90%">
         <tbody id="tblGrid">
         <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
-            <td class="ui-state-default jqgrid-rownum" style="width:60px">供方名称：</td>
-            <td style="width: 70%">${supplier.supplierName}</td>
+            <td class="ui-state-default jqgrid-rownum" style="width: 15%">供方名称：</td>
+            <td>${supplier.supplierName}</td>
         </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 10%">联系方式：</td>
-            <td style="width: 70%">${supplier.supplierContact}</td>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">地址：</td>
+            <td>${supplier.supplierAddress}</td>
         </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 20%">地址：</td>
-            <td style="width: 70%">${supplier.supplierAddress}</td>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">联系方式：</td>
+            <td>${supplier.supplierTel}</td>
         </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 20%">采购分类：</td>
-            <td style="width: 70%">${supplier.purchaseTypeMsg}</td>
-        </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 20%">服务明细：</td>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">服务明细：</td>
             <td>${supplier.serviceDetail}</td>
         </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 20%">服务时间：</td>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">服务时间：</td>
             <td>${supplier.serviceYear}</td>
         </tr>
-        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
-            <td class="ui-state-default jqgrid-rownum" style="width: 20%">单一供方：</td>
-            <td>${supplier.single}</td>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">公司性质：</td>
+            <td>${supplier.companyType}</td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">采购分类：</td>
+            <td>${supplier.purchaseTypeMsg}</td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">单一供方：</td>
+            <td>${supplier.singleOne}</td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">是否通过质量体系认证：</td>
+            <td>${supplier.pass}</td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 18%">与海通业务相关性：</td>
+            <td>${supplier.relevance}</td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum">归口部门：</td>
+            <td>
+                <c:forEach items="${supplier.organizeNames}" var="deptName">
+                    ${deptName}&nbsp;&nbsp;
+                </c:forEach>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 15%">供方相关资质：</td>
+            <td>
+                <table id="quaTable" cellspacing="0" cellpadding="0" border="0" class="ui-jqgrid-btable"
+                       style="width: 90%;">
+                    <thead>
+                    <tr>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">编号</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">证书资质名称</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">到期时间</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">相关附件</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${supplier.qualificationVOS}" var="quas">
+                        <tr>
+                            <td>${quas.qualificationCode}</td>
+                            <td>${quas.qualificationName}</td>
+                            <td>${quas.endTime}</td>
+                            <td>
+                                <a style="text-decoration:underline" href="<c:url value="${'/common/'}"/>download.jsp?filepath=${quas.attach}"><span color="white">${fn:split(quas.attach, "/")[3]}</span></a>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </td>
+        </tr>
+        <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 30px;">
+            <td class="ui-state-default jqgrid-rownum" style="width: 15%">供方行业背景调查：</td>
+            <td>
+                <table id="bgTable" cellspacing="0" cellpadding="0" border="0" class="ui-jqgrid-btable"
+                       style="width: 90%;">
+                    <thead>
+                    <tr>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">编号</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">客户名称</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left">服务内容</th>
+                        <th class="ui-state-default jqgrid-rownum" style="width: 10%;text-align: left"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <c:forEach items="${supplier.backgroundVOS}" var="back">
+                        <tr>
+                            <td>${back.backCode}</td>
+                            <td>${back.clientName}</td>
+                            <td>${back.serviceContent}</td>
+                            <td></td>
+                        </tr>
+                    </c:forEach>
+                    </tbody>
+                </table>
+            </td>
         </tr>
         <c:if test="${supplier.supplierStatus=='合格认证中'||supplier.supplierStatus=='合格终审中'||supplier.supplierStatus=='合格'}">
             <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
@@ -68,7 +141,7 @@
                 <c:if test="${item.layer==2&&item.lastOne}">
                     <tr class="ui-widget-content jqgrow ui-row-ltr" style="height: 15px;">
                         <c:if test="${abc.count==lv_1+1}">
-                        <td class="ui-state-default jqgrid-rownum" rowspan="${rows}" style="width: 20%">合格认证:</td>
+                            <td class="ui-state-default jqgrid-rownum" rowspan="${rows}" style="width: 20%">合格认证:</td>
                         </c:if>
                         <td class="ui-state-default jqgrid-rownum">
                                 ${item.checkerName}：

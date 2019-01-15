@@ -9,7 +9,7 @@ import java.util.List;
 
 public interface SupplierInforManager extends BasicManager {
     List getAllSupplier();
-    List<SupplierInfor> getInSupplier(Integer purchaseType);
+    List<SupplierInfor> getInSupplier(Integer purchaseType,Integer deptId);
     String getContactByName(String supplierName);
     //根据名称获取部门信息
     SupplierInfor findBySupplierName(String SupplierName);
